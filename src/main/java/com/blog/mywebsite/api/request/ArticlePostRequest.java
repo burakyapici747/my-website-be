@@ -4,18 +4,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-//TODO: message alanlarını ingilizce ile değiştir
 public record ArticlePostRequest(
-        @NotBlank(message = "Title field cannot be empty!")
-        @Size(max = 100, message = "Title field must be at most 100 characters!")
+        @NotBlank(message = "Title cannot be empty.")
+        @Size(max = 100, message = "Title can be maximum 100 characters long.")
         String title,
 
-        @NotBlank(message = "Content field cannot be empty!")
-        @Size(min = 10, max = 1000, message = "Content field must be between 10 and 1000 characters")
+        @NotBlank(message = "Content cannot be empty.")
+        @Size(min = 10, max = 1000, message = "Content field must be between 10 and 100 characters long.")
         String content,
 
-        @Positive(message = "Reading Time sadece pozitif olabilir!")
+        @Positive(message = "ReadingTime cannot be negative.")
         int readingTime,
-        @Positive(message = "Rate sadece pozitif olabilri")
+        @Positive(message = "Rate cannot be negative.")
         long rate
 ){}

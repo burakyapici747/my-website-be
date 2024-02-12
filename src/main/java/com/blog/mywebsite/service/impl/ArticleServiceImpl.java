@@ -14,6 +14,8 @@ import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,20 +28,34 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getAll() {
-        final List<Article> articleList = articleRepository.findAll();
-        final List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articleListToArticleDTOList(articleList);
+    public DataResponse<ArticleDTO> getById(String id) {
+        final ArticleDTO articleDTO =  ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+
+        return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_FETCH);
+    }
+
+    @Override
+    public DataResponse<List<ArticleDTO>> getByDate(LocalDateTime date){
+        final List<ArticleDTO> articleDTOList =
+                ArticleMapper.INSTANCE.INSTANCE.articleListToArticleDTOList(articleRepository.findByPublishDate(date));
 
         return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
-        final Article article = findById(id);
+    public DataResponse<List<ArticleDTO>> getByDateRange(LocalDateTime startDate, LocalDateTime endDate){
+        final List<ArticleDTO> articleDTOList =
+                ArticleMapper.INSTANCE.articleListToArticleDTOList(articleRepository.findByPublishDateBetween(startDate, endDate));
 
-        articleRepository.delete(article);
+        return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
+    }
 
-        return new SuccessResponse(EntityConstant.SUCCESS_DELETE);
+    @Override
+    public DataResponse<List<ArticleDTO>> getAll() {
+        final List<ArticleDTO> articleDTOList =
+                ArticleMapper.INSTANCE.articleListToArticleDTOList(articleRepository.findAll());
+
+        return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
     }
 
     //TODO: PostRequest boş gelebilme ihtimalinide kontrol et.
@@ -71,16 +87,17 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_UPDATE);
     }
 
-    @Override
-    public DataResponse<ArticleDTO> getById(String id) {
-        final Article article = findById(id);
-        final ArticleDTO articleDTO =  ArticleMapper.INSTANCE.articleToArticleDTO(article);
-
-        return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_FETCH);
-    }
-
      public Article findById(String id){
         return articleRepository.findById(UUID.fromString(id))
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
+    }
+
+    @Override
+    public BaseResponse deleteById(String id) {
+        final Article article = findById(id);
+
+        articleRepository.delete(article);
+
+        return new SuccessResponse(EntityConstant.SUCCESS_DELETE);
     }
 }

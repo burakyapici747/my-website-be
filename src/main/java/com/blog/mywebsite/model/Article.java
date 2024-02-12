@@ -1,6 +1,8 @@
 package com.blog.mywebsite.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -33,6 +35,8 @@ public class Article extends BaseEntity {
 
     private long rate;
 
+    private LocalDateTime publishDate;
+
     public String getTitle() {
         return title;
     }
@@ -63,5 +67,9 @@ public class Article extends BaseEntity {
 
     public void setRate(long rate) {
         this.rate = rate;
+    }
+
+    public LocalDateTime getPublishDate(){
+        return this.publishDate;
     }
 }
