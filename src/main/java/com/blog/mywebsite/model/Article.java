@@ -1,6 +1,7 @@
 package com.blog.mywebsite.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,9 +32,10 @@ public class Article extends BaseEntity {
 
     private String content;
 
-    private int readingTime;
-
-    private long rate;
+    @Min(0)
+    private int readingTime = 0;
+    @Min(0)
+    private int rate = 0;
 
     private LocalDateTime publishDate;
 
@@ -65,7 +67,7 @@ public class Article extends BaseEntity {
         return rate;
     }
 
-    public void setRate(long rate) {
+    public void setRate(int rate) {
         this.rate = rate;
     }
 

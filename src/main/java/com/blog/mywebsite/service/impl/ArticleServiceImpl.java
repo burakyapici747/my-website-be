@@ -58,7 +58,6 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
     }
 
-    //TODO: PostRequest boş gelebilme ihtimalinide kontrol et.
     @Override
     public DataResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
         Article article = new Article();
@@ -66,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setTitle(articlePostRequest.title());
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
-        article.setRate(articlePostRequest.rate());
+        article.setRate(0);
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
@@ -87,7 +86,7 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_UPDATE);
     }
 
-     public Article findById(String id){
+    public Article findById(String id){
         return articleRepository.findById(UUID.fromString(id))
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
     }
