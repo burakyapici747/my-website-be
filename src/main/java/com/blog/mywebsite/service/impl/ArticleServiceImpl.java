@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -29,13 +28,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public DataResponse<ArticleDTO> getById(String id) {
-        final ArticleDTO articleDTO =  ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
 
         return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getByDate(LocalDateTime date){
+    public DataResponse<List<ArticleDTO>> getByDate(LocalDateTime date) {
         final List<ArticleDTO> articleDTOList =
                 ArticleMapper.INSTANCE.INSTANCE.articleListToArticleDTOList(articleRepository.findByPublishDate(date));
 
@@ -66,6 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
         article.setRate(0);
+        article.setPublishDate(articlePostRequest.publishDate());
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
@@ -87,7 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     public Article findById(String id){
-        return articleRepository.findById(UUID.fromString(id))
+        return articleRepository.findById(id)
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
     }
 

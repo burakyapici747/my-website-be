@@ -75,7 +75,7 @@ public class ArticleServiceTest {
     @Test
      void givenExistingArticleId_whenDeleteById_thenReturnBaseResponse(){
         //Arrange
-        UUID randomUUID = UUID.randomUUID();
+        String randomUUID = UUID.randomUUID().toString();
 
         Article article = new Article();
         article.setId(randomUUID);
@@ -101,7 +101,7 @@ public class ArticleServiceTest {
     @Test
     void givenNotExistingArticleId_whenDeleteById_thenThrowEntityNotFoundException(){
         //Arrange
-        UUID randomUUID = UUID.randomUUID();
+        String randomUUID = UUID.randomUUID().toString();
 
         when(articleRepository.findById(any())).thenThrow(EntityNotFoundException.class);
 
