@@ -12,5 +12,5 @@ public interface ArticleMapper {
     ArticleMapper INSTANCE = Mappers.getMapper(ArticleMapper.class);
 
     ArticleDTO articleToArticleDTO(Article article);
-    List<ArticleDTO> articleListToArticleDTOList(List<Article> articleList);
+    List<ArticleDTO> articlesToArticleDTOs(List<Article> articles);
 }

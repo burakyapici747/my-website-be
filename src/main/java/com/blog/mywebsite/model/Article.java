@@ -14,16 +14,15 @@ import java.util.Objects;
 @Entity
 @Table(name = "ARTICLE")
 public class Article extends BaseEntity {
-    @OneToMany(mappedBy = "article")
+    @OneToMany
+    @JoinTable(name = "ARTICLE_COMMENT")
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
-            name = "ARTICLE_CONTENT_TYPE",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "content_type_id")
+            name = "ARTICLE_CONTENT_TYPE"
     )
-    private List<ContentType> contentTypeList;
+    private List<ContentType> contentTypes;
 
     @NotBlank(message = "Title cannot be empty")
     @Size(min = 5, max = 255, message = "Title field must be between 5 and 255 characters long.")

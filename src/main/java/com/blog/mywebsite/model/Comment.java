@@ -8,13 +8,6 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "COMMENT")
 public class Comment extends BaseEntity {
-    @ManyToOne(targetEntity = Article.class)
-    @JoinColumn(
-            name = "article_id",
-            referencedColumnName = "id"
-    )
-    private Article article;
-
     @NotBlank(message = "Content field cannot be empty.")
     @Size(min = 5, max = 1000, message = "Content field must be between 5 and 1000 characters long.")
     private String content;

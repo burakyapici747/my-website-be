@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
+@Table(name = "CLIENT")
 public class Client extends BaseEntity {
     private String content;
 

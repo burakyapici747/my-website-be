@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ISO8601Validation {
-    String message() default "Geçersiz tarih veya saat. Karşılaştırılabilecek ISO 8601 formatında olmalıdır.";
+    String message() default "Please enter a date in ISO 8601 format. For example, 'dd-MM-yyyyTHH:mm:ss.SSS'";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

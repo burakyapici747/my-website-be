@@ -12,5 +12,5 @@ public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
     CommentDTO commentToCommentDTO(Comment comment);
-    List<CommentDTO> commentListToCommentDTOList(List<Comment> commentList);
+    List<CommentDTO> commentsToCommentDTOs(List<Comment> comments);
 }

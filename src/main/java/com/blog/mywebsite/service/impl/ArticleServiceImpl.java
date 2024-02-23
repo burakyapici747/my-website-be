@@ -28,33 +28,33 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public DataResponse<ArticleDTO> getById(String id) {
-        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+        final ArticleDTO articleDTOs = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
 
-        return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
     public DataResponse<List<ArticleDTO>> getByDate(LocalDateTime date) {
-        final List<ArticleDTO> articleDTOList =
-                ArticleMapper.INSTANCE.INSTANCE.articleListToArticleDTOList(articleRepository.findByPublishDate(date));
+        final List<ArticleDTO> articleDTOs =
+                ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
 
-        return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
     public DataResponse<List<ArticleDTO>> getByDateRange(LocalDateTime startDate, LocalDateTime endDate){
-        final List<ArticleDTO> articleDTOList =
-                ArticleMapper.INSTANCE.articleListToArticleDTOList(articleRepository.findByPublishDateBetween(startDate, endDate));
+        final List<ArticleDTO> articleDTOs =
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
 
-        return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
     public DataResponse<List<ArticleDTO>> getAll() {
-        final List<ArticleDTO> articleDTOList =
-                ArticleMapper.INSTANCE.articleListToArticleDTOList(articleRepository.findAll());
+        final List<ArticleDTO> articleDTOs =
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findAll());
 
-        return new SuccessDataResponse<>(articleDTOList, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
         article.setRate(0);
-        article.setPublishDate(articlePostRequest.publishDate());
+        article.setPublishDate(LocalDateTime.parse(articlePostRequest.publishDate()));
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 

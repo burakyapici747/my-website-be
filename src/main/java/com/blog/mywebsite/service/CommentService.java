@@ -11,7 +11,6 @@ import java.util.List;
 public interface CommentService {
     DataResponse<List<CommentDTO>> getAll();
     DataResponse<CommentDTO> getById(String id);
-    DataResponse<List<CommentDTO>> getAllByArticleId(String articleId);
     BaseResponse deleteById(String id);
     DataResponse<CommentDTO> updateById(String id, CommentPutRequest commentUpdateRequest);
     DataResponse<CommentDTO> create(CommentPostRequest commentPostRequest);
