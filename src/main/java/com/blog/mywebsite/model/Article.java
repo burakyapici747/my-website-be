@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,9 +19,7 @@ public class Article extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(
-            name = "ARTICLE_CONTENT_TYPE"
-    )
+    @JoinTable(name = "ARTICLE_CONTENT_TYPE")
     private List<ContentType> contentTypes;
 
     @NotBlank(message = "Title cannot be empty")
@@ -39,12 +37,12 @@ public class Article extends BaseEntity {
     private int rate = 0;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private LocalDateTime publishDate;
+    private LocalDate publishDate;
 
     @PrePersist
     public void initial(){
         if(Objects.isNull(this.publishDate)){
-            this.publishDate = LocalDateTime.now();
+            this.publishDate = LocalDate.now();
         }
     }
 
@@ -72,7 +70,7 @@ public class Article extends BaseEntity {
         this.readingTime = readingTime;
     }
 
-    public long getRate() {
+    public int getRate() {
         return rate;
     }
 
@@ -80,11 +78,11 @@ public class Article extends BaseEntity {
         this.rate = rate;
     }
 
-    public LocalDateTime getPublishDate(){
+    public LocalDate getPublishDate(){
         return this.publishDate;
     }
 
-    public void setPublishDate(LocalDateTime publishDate){
+    public void setPublishDate(LocalDate publishDate){
         this.publishDate = publishDate;
     }
 }

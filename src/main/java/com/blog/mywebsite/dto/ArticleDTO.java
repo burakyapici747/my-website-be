@@ -1,7 +1,7 @@
 package com.blog.mywebsite.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ArticleDTO(
@@ -9,8 +9,6 @@ public record ArticleDTO(
         String content,
         int readingTime,
         long rate,
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
-        LocalDateTime publishDate,
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+        LocalDate publishDate,
         LocalDateTime createdAt
 ){ }

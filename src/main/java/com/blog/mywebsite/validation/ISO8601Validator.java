@@ -3,10 +3,8 @@ package com.blog.mywebsite.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.regex.Pattern;
 
 public class ISO8601Validator implements ConstraintValidator<ISO8601Validation, String> {
 
@@ -22,7 +20,7 @@ public class ISO8601Validator implements ConstraintValidator<ISO8601Validation, 
         }
 
         try {
-            DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(value);
+            DateTimeFormatter.ISO_LOCAL_DATE.parse(value);
 
             return true;
         } catch (DateTimeParseException e) {

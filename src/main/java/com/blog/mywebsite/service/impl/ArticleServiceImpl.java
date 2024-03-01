@@ -15,7 +15,7 @@ import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,7 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getByDate(LocalDateTime date) {
+    public DataResponse<List<ArticleDTO>> getByDate(LocalDate date) {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
 
@@ -42,7 +42,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getByDateRange(LocalDateTime startDate, LocalDateTime endDate){
+    public DataResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
 
@@ -65,7 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
         article.setRate(0);
-        article.setPublishDate(LocalDateTime.parse(articlePostRequest.publishDate()));
+        article.setPublishDate(LocalDate.parse(articlePostRequest.publishDate()));
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
@@ -76,10 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
     public DataResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest) {
         final Article article = findById(id);
 
-        article.setTitle(articlePutRequest.title());
-        article.setContent(articlePutRequest.content());
-        article.setRate(articlePutRequest.rate());
-        article.setReadingTime(articlePutRequest.readingTime());
+        ArticleMapper.INSTANCE.articlePutRequestToArticleDTO(articlePutRequest, article);
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
