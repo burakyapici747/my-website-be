@@ -16,7 +16,6 @@ import com.blog.mywebsite.service.CommentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -28,10 +27,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public DataResponse<List<CommentDTO>> getAll(){
-        final List<Comment> commentList = commentRepository.findAll();
-        final List<CommentDTO> commentDTOList = CommentMapper.INSTANCE.commentListToCommentDTOList(commentList);
+        final List<Comment> comments = commentRepository.findAll();
+        final List<CommentDTO> commentDTOs = CommentMapper.INSTANCE.commentsToCommentDTOs(comments);
 
-        return new SuccessDataResponse<>(commentDTOList, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(commentDTOs, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
@@ -40,14 +39,6 @@ public class CommentServiceImpl implements CommentService {
         final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(comment);
 
         return new SuccessDataResponse<>(commentDTO, EntityConstant.SUCCESS_FETCH);
-    }
-
-    @Override
-    public DataResponse<List<CommentDTO>> getAllByArticleId(String articleId) {
-        final List<Comment> commentList = commentRepository.findAllByArticleId(UUID.fromString(articleId));
-        final List<CommentDTO> commentDTOList = CommentMapper.INSTANCE.commentListToCommentDTOList(commentList);
-
-        return new SuccessDataResponse<>(commentDTOList, EntityConstant.SUCCESS_FETCH);
     }
 
     @Override
@@ -84,7 +75,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     protected Comment findById(String id){
-        return commentRepository.findById(UUID.fromString(id))
+        return commentRepository.findById(id)
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.COMMENT_NOT_FOUND));
     }
 }

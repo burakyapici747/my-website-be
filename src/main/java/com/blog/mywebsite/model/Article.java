@@ -1,37 +1,50 @@
 package com.blog.mywebsite.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ARTICLE")
 public class Article extends BaseEntity {
-    @OneToMany(
-            targetEntity = Comment.class,
-            mappedBy = "article",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private List<Comment> commentList;
+    @OneToMany
+    @JoinTable(name = "ARTICLE_COMMENT")
+    private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(
-            targetEntity = ContentType.class,
-            fetch = FetchType.EAGER
-    )
-    @JoinTable(
-            name = "ARTICLE_CONTENT_TYPE",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "content_type_id")
-    )
-    private List<ContentType> contentTypeList;
+    @ManyToMany
+    @JoinTable(name = "ARTICLE_CONTENT_TYPE")
+    private List<ContentType> contentTypes;
 
+    @NotBlank(message = "Title cannot be empty")
+    @Size(min = 5, max = 255, message = "Title field must be between 5 and 255 characters long.")
     private String title;
 
+    @NotBlank(message = "Content cannot be empty")
+    @Size(min = 5, max = 1000, message = "Content field must be between 5 and 2500 characters long.")
     private String content;
 
+    @PositiveOrZero(message = "Reading time field cannot be negative.")
     private int readingTime;
 
-    private long rate;
+    @PositiveOrZero(message = "Rate field cannot be negative.")
+    private int rate = 0;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDate publishDate;
+
+    @PrePersist
+    public void initial(){
+        if(Objects.isNull(this.publishDate)){
+            this.publishDate = LocalDate.now();
+        }
+    }
 
     public String getTitle() {
         return title;
@@ -57,11 +70,19 @@ public class Article extends BaseEntity {
         this.readingTime = readingTime;
     }
 
-    public long getRate() {
+    public int getRate() {
         return rate;
     }
 
-    public void setRate(long rate) {
+    public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public LocalDate getPublishDate(){
+        return this.publishDate;
+    }
+
+    public void setPublishDate(LocalDate publishDate){
+        this.publishDate = publishDate;
     }
 }
