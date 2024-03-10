@@ -18,5 +18,4 @@ public interface ArticleService {
     BaseResponse deleteById(String id);
     DataResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest);
     DataResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest);
-    Article findById(String id);
 }

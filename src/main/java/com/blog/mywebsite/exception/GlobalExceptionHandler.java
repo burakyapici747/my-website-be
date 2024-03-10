@@ -1,6 +1,7 @@
 package com.blog.mywebsite.exception;
 
 import com.blog.mywebsite.api.response.ErrorDataResponse;
+import com.blog.mywebsite.api.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -22,7 +23,6 @@ public class GlobalExceptionHandler{
 
         Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
 
-
         violations.forEach(violation -> {
             errors.put(violation.getPropertyPath().toString(), violation.getMessage());
         });
@@ -32,7 +32,15 @@ public class GlobalExceptionHandler{
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDataResponse handleEntityNotFoundException(EntityNotFoundException entityNotFoundException, HttpServletRequest httpServletRequest){
-        return null;
+    public ErrorDataResponse<Object> handleEntityNotFoundException(EntityNotFoundException entityNotFoundException, HttpServletRequest httpServletRequest){
+
+        return new ErrorDataResponse<>(null, entityNotFoundException.getMessage());
     }
+
+    @ExceptionHandler(EntityExistException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEntityExistsException(EntityExistException entityExistException, HttpServletRequest httpSAervletRequest){
+        return new ErrorResponse(entityExistException.getMessage());
+    }
+
 }
