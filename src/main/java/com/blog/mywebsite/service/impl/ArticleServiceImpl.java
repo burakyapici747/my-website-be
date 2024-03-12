@@ -59,7 +59,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public DataResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
-        Article article = new Article();
+        final Article article = new Article();
 
         article.setTitle(articlePostRequest.title());
         article.setContent(articlePostRequest.content());
@@ -83,10 +83,6 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_UPDATE);
     }
 
-    public Article findById(String id){
-        return articleRepository.findById(id)
-                .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
-    }
 
     @Override
     public BaseResponse deleteById(String id) {
@@ -95,5 +91,10 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.delete(article);
 
         return new SuccessResponse(EntityConstant.SUCCESS_DELETE);
+    }
+
+    private Article findById(String id){
+        return articleRepository.findById(id)
+                .orElseThrow( () -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 }
