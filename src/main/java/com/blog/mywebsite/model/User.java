@@ -1,11 +1,9 @@
 package com.blog.mywebsite.model;
 
-import com.blog.mywebsite.enumerator.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,8 +13,9 @@ public class User extends BaseEntity {
 
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private List<Role> roles;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_ROLE")
+    private List<Role> roles = new ArrayList<>();
 
     public String getName(){
         return name;

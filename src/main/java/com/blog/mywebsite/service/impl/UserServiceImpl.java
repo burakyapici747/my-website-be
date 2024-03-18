@@ -4,12 +4,15 @@ import com.blog.mywebsite.api.request.UserCreateRequest;
 import com.blog.mywebsite.api.response.*;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.UserDTO;
-import com.blog.mywebsite.enumerator.Role;
 import com.blog.mywebsite.exception.EntityExistException;
+import com.blog.mywebsite.mapper.UserMapper;
+import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.model.User;
+import com.blog.mywebsite.repository.RoleRepository;
 import com.blog.mywebsite.repository.UserRepository;
 import com.blog.mywebsite.service.UserService;
 import com.blog.mywebsite.util.security.JWTHelper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -34,21 +39,21 @@ public class UserServiceImpl implements UserService {
     public DataResponse<String> create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
 
-        String jwtToken = JWTHelper.generateJwtToken(userCreateRequest.email(), List.of(Role.USER.getValue()));
+        String jwtToken = JWTHelper.generateJwtToken(
+                userCreateRequest.email(),
+                List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
+        );
 
-//        final User user = new User();
-//
-//        user.setName(userCreateRequest.name());
-//        user.setEmail(userCreateRequest.email());
-//        user.setRole(Role.USER);
-//
-//
-//
-//        final UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(userRepository.save(user));
+        final Role role = getRoleForUser();
+        final User user = new User();
 
-        //return new SuccessDataResponse<>(userDTO, EntityConstant.SUCCESS_CREATE);
+        user.setName(userCreateRequest.name());
+        user.setEmail(userCreateRequest.email());
+        user.getRoles().add(role);
 
-        return new SuccessDataResponse<>(jwtToken, "Token is success");
+        final UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(userRepository.save(user));
+
+        return new SuccessDataResponse<>(jwtToken, EntityConstant.SUCCESS_CREATE);
     }
 
     @Override
@@ -67,8 +72,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private User getUserByEmail(String email){
+    protected User getUserByEmail(String email){
          return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(EntityConstant.NOT_FOUND_DATA));
+    }
+
+    private Role getRoleForUser(){
+        return roleRepository.findByName(com.blog.mywebsite.enumerator.Role.USER.getValue())
+                .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 }

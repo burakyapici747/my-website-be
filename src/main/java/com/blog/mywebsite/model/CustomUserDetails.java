@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
-    private final String username;
+    private final String name;
     private final String email;
     private final List<SimpleGrantedAuthority> authorities;
 
-    public CustomUserDetails(String username, String email, List<SimpleGrantedAuthority> authorities) {
-        this.username = username;
+    public CustomUserDetails(String name, String email, List<SimpleGrantedAuthority> authorities) {
+        this.name = name;
         this.email = email;
         this.authorities = authorities;
     }
@@ -30,7 +30,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return name;
     }
 
     @Override

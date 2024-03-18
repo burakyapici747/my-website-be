@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class CustomAuthorizationFilter extends OncePerRequestFilter {
+public class CustomAuthorizationFilter extends OncePerRequestFilter{
     private final CustomUserDetailsService customUserDetailsService;
 
     public CustomAuthorizationFilter(CustomUserDetailsService customUserDetailsService) {
