@@ -1,5 +1,7 @@
 package com.blog.mywebsite.config;
 
+import com.blog.mywebsite.exception.CustomAccessDeniedHandler;
+import com.blog.mywebsite.exception.CustomAuthenticationEntryPoint;
 import com.blog.mywebsite.security.CustomAuthenticationFilter;
 import com.blog.mywebsite.security.CustomAuthorizationFilter;
 import com.blog.mywebsite.security.EmailAuthenticationProvider;
@@ -22,10 +24,14 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfiguration {
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public SecurityConfiguration(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfiguration(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration, CustomAccessDeniedHandler customAccessDeniedHandler, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Bean

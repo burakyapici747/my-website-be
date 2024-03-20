@@ -8,11 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class MyWebsiteApplication implements CommandLineRunner {
-//	private final RoleRepository roleRepository;
-//
-//    public MyWebsiteApplication(RoleRepository roleRepository) {
-//        this.roleRepository = roleRepository;
-//    }
+	private final RoleRepository roleRepository;
+
+    public MyWebsiteApplication(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     public static void main(String[] args) {
 		SpringApplication.run(MyWebsiteApplication.class, args);
@@ -20,7 +20,7 @@ public class MyWebsiteApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		Role role = new Role(com.blog.mywebsite.enumerator.Role.USER.getValue());
-//		roleRepository.save(role);
+		Role role = new Role(com.blog.mywebsite.enumerator.Role.USER.getValue());
+		roleRepository.save(role);
 	}
 }

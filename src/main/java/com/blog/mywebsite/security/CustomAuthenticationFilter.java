@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jdk.jfr.ContentType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -82,9 +83,10 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         //this.logger.trace("Cleared SecurityContextHolder");
         //this.logger.trace("Handling authentication failure");
         //this.rememberMeServices.loginFail(request, response);
+
         this.getFailureHandler().onAuthenticationFailure(request, response, failed);
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         Map<String, String> responseData = new HashMap<>();
