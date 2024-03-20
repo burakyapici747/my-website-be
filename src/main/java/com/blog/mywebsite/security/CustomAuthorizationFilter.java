@@ -7,13 +7,13 @@ import com.blog.mywebsite.model.CustomUserDetails;
 import com.blog.mywebsite.service.impl.CustomUserDetailsService;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,9 +35,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
 
     @Override
     protected void doFilterInternal(
-             HttpServletRequest request,
-             HttpServletResponse response,
-             FilterChain filterChain) throws ServletException, IOException {
+             @Nullable HttpServletRequest request,
+             @Nullable HttpServletResponse response,
+             @Nullable FilterChain filterChain) throws ServletException, IOException {
         if(request.getServletPath().equals("/api/user/login")){
             filterChain.doFilter(request, response);
         }else{
@@ -58,7 +58,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
                 }catch (JWTVerificationException e){
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
-
 
                     final Map<String, String> errorData = new HashMap<>();
                     errorData.put("error", e.getMessage());

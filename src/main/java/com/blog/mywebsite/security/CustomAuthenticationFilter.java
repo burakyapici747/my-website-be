@@ -5,6 +5,7 @@ import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
@@ -23,11 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final AuthenticationManager authenticationManager;
     public static final String SPRING_SECURITY_FORM_EMAIL_KEY = "email";
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/user/login", "POST");
     private String emailParameter = "email";
-    private UserLoginRequest userLoginRequest;
     private boolean postOnly = true;
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -51,7 +55,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     protected void successfulAuthentication(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication)
             throws IOException {
-        final String email1 = authentication.getName();
         final String email = ((EmailAuthenticationToken)authentication).getEmail();
 
         final String accessToken = JWTHelper.generateJwtToken(email, authentication.getAuthorities().stream()
@@ -68,20 +71,41 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
 
+    @Override
+    protected void unsuccessfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException failed
+    ) throws IOException, ServletException {
+        this.securityContextHolderStrategy.clearContext();
+        //this.logger.trace("Failed to process authentication request", failed);
+        //this.logger.trace("Cleared SecurityContextHolder");
+        //this.logger.trace("Handling authentication failure");
+        //this.rememberMeServices.loginFail(request, response);
+        this.getFailureHandler().onAuthenticationFailure(request, response, failed);
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("error", "hata var");
+
+        new ObjectMapper().writeValue(response.getOutputStream(), responseData);
+    }
 
     @Nullable
     protected String obtainEmail(HttpServletRequest request) throws IOException {
-        this.userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
-        return this.userLoginRequest.getEmail();
+        UserLoginRequest userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
+        return userLoginRequest.getEmail();
     }
 
     protected void setDetails(HttpServletRequest request, UsernamePasswordAuthenticationToken authRequest) {
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
 
-    public void setEmailParameter(String usernameParameter) {
-        Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
-        this.emailParameter = usernameParameter;
+    public void setEmailParameter(String emailParameter) {
+        Assert.hasText(emailParameter, "Email parameter must not be empty or null");
+        this.emailParameter = emailParameter;
     }
 
     public void setPostOnly(boolean postOnly) {
