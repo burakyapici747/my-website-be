@@ -1,27 +1,15 @@
 package com.blog.mywebsite.api.response;
 
-public abstract class BaseResponse {
+public class BaseResponse<T> {
     private boolean isSuccess;
+    private int httpStatus;
     private String message;
+    private T data;
 
-    public BaseResponse(boolean isSuccess, String message){
+    public BaseResponse(boolean isSuccess, int httpStatus, String message, T data){
         this.isSuccess = isSuccess;
+        this.httpStatus = httpStatus;
         this.message = message;
-    }
-
-    public boolean isSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(boolean success) {
-        isSuccess = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+        this.data = data;
     }
 }

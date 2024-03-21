@@ -3,9 +3,6 @@ package com.blog.mywebsite.service.impl;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.DataResponse;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -13,6 +10,7 @@ import com.blog.mywebsite.mapper.ArticleMapper;
 import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,10 +25,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public DataResponse<ArticleDTO> getById(String id) {
+    public BaseResponse<ArticleDTO> getById(String id) {
         final ArticleDTO articleDTOs = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
 
-        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override

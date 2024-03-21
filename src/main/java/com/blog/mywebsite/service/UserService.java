@@ -1,8 +1,6 @@
 package com.blog.mywebsite.service;
 
 import com.blog.mywebsite.api.request.UserCreateRequest;
-import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.DataResponse;
 import com.blog.mywebsite.dto.UserDTO;
 
 public interface UserService {

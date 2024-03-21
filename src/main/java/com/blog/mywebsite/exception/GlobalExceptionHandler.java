@@ -1,5 +1,6 @@
 package com.blog.mywebsite.exception;
 
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.ErrorDataResponse;
 import com.blog.mywebsite.api.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +17,12 @@ import java.util.Set;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
+    //TODO message içeriğini düzelt
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDataResponse<Map<String, String>> handleConstraintViolationException(ConstraintViolationException constraintViolationException){
+    public BaseResponse<Map<String, String>> handleConstraintViolationException(
+            ConstraintViolationException constraintViolationException
+    ){
         Map<String, String> errors = new HashMap<>();
 
         Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
@@ -27,20 +31,22 @@ public class GlobalExceptionHandler{
             errors.put(violation.getPropertyPath().toString(), violation.getMessage());
         });
 
-        return new ErrorDataResponse<>(errors, "");
+        return new ErrorDataResponse<>(HttpStatus.BAD_REQUEST.value(), "", errors);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDataResponse<Object> handleEntityNotFoundException(EntityNotFoundException entityNotFoundException, HttpServletRequest httpServletRequest){
+    public ErrorDataResponse<Object> handleEntityNotFoundException(
+            EntityNotFoundException entityNotFoundException
+    ){
 
-        return new ErrorDataResponse<>(null, entityNotFoundException.getMessage());
+        return new ErrorDataResponse<>(HttpStatus.NOT_FOUND.value(), entityNotFoundException.getMessage(), null);
     }
 
     @ExceptionHandler(EntityExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEntityExistsException(EntityExistException entityExistException, HttpServletRequest httpSAervletRequest){
-        return new ErrorResponse(entityExistException.getMessage());
+    public BaseResponse handleEntityExistsException(EntityExistException entityExistException){
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), entityExistException.getMessage());
     }
 
 }

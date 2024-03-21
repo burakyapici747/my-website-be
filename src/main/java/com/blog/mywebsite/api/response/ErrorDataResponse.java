@@ -1,7 +1,7 @@
 package com.blog.mywebsite.api.response;
 
-public class ErrorDataResponse<T> extends DataResponse<T>{
-    public ErrorDataResponse(T data, String message){
-        super(data, false, message);
+public class ErrorDataResponse<T> extends BaseResponse<T> {
+    public ErrorDataResponse(int httpStatus, String message, T data) {
+        super(false, httpStatus, message, data);
     }
 }

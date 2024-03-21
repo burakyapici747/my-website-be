@@ -84,11 +84,12 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         //this.logger.trace("Handling authentication failure");
         //this.rememberMeServices.loginFail(request, response);
 
-        this.getFailureHandler().onAuthenticationFailure(request, response, failed);
-
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
+        this.getFailureHandler().onAuthenticationFailure(request, response, failed);
+
         Map<String, String> responseData = new HashMap<>();
         responseData.put("error", "hata var");
 

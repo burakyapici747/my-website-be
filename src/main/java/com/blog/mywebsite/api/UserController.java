@@ -1,8 +1,6 @@
 package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.UserCreateRequest;
-import com.blog.mywebsite.api.response.DataResponse;
-import com.blog.mywebsite.dto.UserDTO;
 import com.blog.mywebsite.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

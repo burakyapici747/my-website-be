@@ -1,7 +1,6 @@
 package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.CommentPostRequest;
-import com.blog.mywebsite.api.response.DataResponse;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.service.CommentService;
 import org.springframework.http.ResponseEntity;

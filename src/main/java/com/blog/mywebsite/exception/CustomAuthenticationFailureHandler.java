@@ -5,16 +5,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.io.IOException;
 
-public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
-    public void commence(
+    public void onAuthenticationFailure(
             HttpServletRequest request,
             HttpServletResponse response,
-            AuthenticationException authException
+            AuthenticationException exception
     ) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

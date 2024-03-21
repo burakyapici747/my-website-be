@@ -2,7 +2,6 @@ package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
-import com.blog.mywebsite.api.response.DataResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.service.ArticleService;
 import jakarta.validation.Valid;

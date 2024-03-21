@@ -1,7 +1,5 @@
 package com.blog.mywebsite.service.impl;
 
-import com.blog.mywebsite.api.response.DataResponse;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.RoleDTO;
 import com.blog.mywebsite.mapper.RoleMapper;
