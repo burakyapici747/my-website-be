@@ -3,9 +3,7 @@ package com.blog.mywebsite.service.impl;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.DataResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -13,6 +11,7 @@ import com.blog.mywebsite.mapper.ArticleMapper;
 import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,39 +26,39 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public DataResponse<ArticleDTO> getById(String id) {
+    public BaseResponse<ArticleDTO> getById(String id) {
         final ArticleDTO articleDTOs = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
 
-        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getByDate(LocalDate date) {
+    public BaseResponse<List<ArticleDTO>> getByDate(LocalDate date) {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
 
-        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
+    public BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
 
-        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
-    public DataResponse<List<ArticleDTO>> getAll() {
+    public BaseResponse<List<ArticleDTO>> getAll() {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findAll());
 
-        return new SuccessDataResponse<>(articleDTOs, EntityConstant.SUCCESS_FETCH);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
-    public DataResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
-        Article article = new Article();
+    public BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
+        final Article article = new Article();
 
         article.setTitle(articlePostRequest.title());
         article.setContent(articlePostRequest.content());
@@ -69,24 +68,20 @@ public class ArticleServiceImpl implements ArticleService {
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
-        return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_CREATE);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
     }
 
     @Override
-    public DataResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest) {
+    public BaseResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest) {
         final Article article = findById(id);
 
         ArticleMapper.INSTANCE.articlePutRequestToArticleDTO(articlePutRequest, article);
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
-        return new SuccessDataResponse<>(articleDTO, EntityConstant.SUCCESS_UPDATE);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
 
-    public Article findById(String id){
-        return articleRepository.findById(id)
-                .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
-    }
 
     @Override
     public BaseResponse deleteById(String id) {
@@ -94,6 +89,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleRepository.delete(article);
 
-        return new SuccessResponse(EntityConstant.SUCCESS_DELETE);
+        return new SuccessDataResponse(HttpStatus.OK.value(), null, EntityConstant.SUCCESS_DELETE);
+    }
+
+    private Article findById(String id){
+        return articleRepository.findById(id)
+                .orElseThrow( () -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 }

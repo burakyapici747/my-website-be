@@ -1,7 +1,7 @@
 package com.blog.mywebsite.api.response;
 
-public class SuccessResponse extends BaseResponse{
-    public SuccessResponse(String message){
-        super(true, message);
+public class SuccessResponse extends BaseResponse<Void>{
+    public SuccessResponse(int httpStatus, String message) {
+        super(true, httpStatus, message, null);
     }
 }

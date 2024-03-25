@@ -1,7 +1,7 @@
 package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.CommentPostRequest;
-import com.blog.mywebsite.api.response.DataResponse;
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.service.CommentService;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +19,22 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<DataResponse<List<CommentDTO>>> getAll(){
-        final DataResponse<List<CommentDTO>> response = commentService.getAll();
+    public ResponseEntity<BaseResponse<List<CommentDTO>>> getAll(){
+        final BaseResponse<List<CommentDTO>> response = commentService.getAll();
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataResponse<CommentDTO>> getById(@PathVariable("id") final String id){
-        final DataResponse<CommentDTO> response = commentService.getById(id);
+    public ResponseEntity<BaseResponse<CommentDTO>> getById(@PathVariable("id") final String id){
+        final BaseResponse<CommentDTO> response = commentService.getById(id);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<DataResponse<CommentDTO>> create(@RequestBody CommentPostRequest commentPostRequest){
-        final DataResponse<CommentDTO> response = commentService.create(commentPostRequest);
+    public ResponseEntity<BaseResponse<CommentDTO>> create(@RequestBody CommentPostRequest commentPostRequest){
+        final BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
 
         return ResponseEntity.ok(response);
     }
