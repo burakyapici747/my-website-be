@@ -11,9 +11,9 @@ import java.util.List;
 public interface ArticleService {
     BaseResponse<ArticleDTO> getById(String id);
     BaseResponse<List<ArticleDTO>> getAll();
-    BaseReponse<List<ArticleDTO>> getByDate(LocalDate date);
+    BaseResponse<List<ArticleDTO>> getByDate(LocalDate date);
     BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate);
     BaseResponse deleteById(String id);
-    DataResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest);
-    DataResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest);
+    BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest);
+    BaseResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest);
 }

@@ -1,11 +1,14 @@
 package com.blog.mywebsite.service.impl;
 
+import com.blog.mywebsite.api.response.BaseResponse;
+import com.blog.mywebsite.api.response.SuccessDataResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.RoleDTO;
 import com.blog.mywebsite.mapper.RoleMapper;
 import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.repository.RoleRepository;
 import com.blog.mywebsite.service.RoleService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +28,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public DataResponse<RoleDTO> create(com.blog.mywebsite.enumerator.Role roleName) {
+    public BaseResponse<RoleDTO> create(com.blog.mywebsite.enumerator.Role roleName) {
         final Role role = new Role();
         role.setName(roleName.getValue());
 
         final RoleDTO roleDTO = RoleMapper.INSTANCE.roleToRoleDTO(roleRepository.save(role));
 
-        return new SuccessDataResponse<>(roleDTO, EntityConstant.SUCCESS_CREATE);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, roleDTO);
     }
 }

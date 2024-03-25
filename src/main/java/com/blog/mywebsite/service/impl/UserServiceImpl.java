@@ -13,6 +13,7 @@ import com.blog.mywebsite.repository.UserRepository;
 import com.blog.mywebsite.service.UserService;
 import com.blog.mywebsite.util.security.JWTHelper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +30,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DataResponse<UserDTO> getById(String id) {
+    public BaseResponse<UserDTO> getById(String id) {
         return null;
     }
 
     //TODO Kullanıcının oluşturmak istediği mail sistemde kayıtlı değil ise, token oluşturup
     //TODO Mail adresine link gönderilecek ve mail adresine gelen link üzerinden sisteme giriş yapıp kayıt olmuş olacak.
     @Override
-    public DataResponse<String> create(UserCreateRequest userCreateRequest) {
+    public BaseResponse<String> create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
 
         String jwtToken = JWTHelper.generateJwtToken(
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
         final UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(userRepository.save(user));
 
-        return new SuccessDataResponse<>(jwtToken, EntityConstant.SUCCESS_CREATE);
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DataResponse<UserDTO> updateNameById(String id, String name) {
+    public BaseResponse<UserDTO> updateNameById(String id, String name) {
         return null;
     }
 

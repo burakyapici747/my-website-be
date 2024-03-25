@@ -1,6 +1,8 @@
 package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
+import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -8,7 +10,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jdk.jfr.ContentType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,8 +67,12 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         //TODO COOKIE eklenecek
 
-        final Map<String, String> responseData = new HashMap<>();
-        responseData.put("access_token", accessToken);
+
+        final Map<String, String> data = new HashMap<>();
+        data.put("access_token", accessToken);
+
+        SuccessDataResponse<Map<String, String>> responseData =
+                new SuccessDataResponse(HttpServletResponse.SC_UNAUTHORIZED, "", data);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
@@ -89,11 +94,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         response.setCharacterEncoding("UTF-8");
 
         this.getFailureHandler().onAuthenticationFailure(request, response, failed);
-
-        Map<String, String> responseData = new HashMap<>();
-        responseData.put("error", "hata var");
-
-        new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
 
     @Nullable

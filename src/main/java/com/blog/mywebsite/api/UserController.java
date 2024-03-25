@@ -1,6 +1,7 @@
 package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.UserCreateRequest;
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<DataResponse<String>> create(@RequestBody UserCreateRequest userCreateRequest){
+    public ResponseEntity<BaseResponse<String>> create(@RequestBody UserCreateRequest userCreateRequest){
         return ResponseEntity.ok(userService.create(userCreateRequest));
     }
 }

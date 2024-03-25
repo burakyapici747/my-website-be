@@ -2,6 +2,7 @@ package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.service.ArticleService;
 import jakarta.validation.Valid;
@@ -25,49 +26,49 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataResponse<ArticleDTO>> getById(@PathVariable("id") final String id){
-        final DataResponse<ArticleDTO> response = articleService.getById(id);
+    public ResponseEntity<BaseResponse<ArticleDTO>> getById(@PathVariable("id") final String id){
+        final BaseResponse<ArticleDTO> response = articleService.getById(id);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<DataResponse<List<ArticleDTO>>> getByDate(@PathVariable LocalDate date){
-        final DataResponse<List<ArticleDTO>> response = articleService.getByDate(date);
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDate(@PathVariable LocalDate date){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getByDate(date);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/between-date/{startDate}/{endDate}")
-    public ResponseEntity<DataResponse<List<ArticleDTO>>> getByDateRange(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate){
-        final DataResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<DataResponse<List<ArticleDTO>>> getAll(){
-        final DataResponse<List<ArticleDTO>> response = articleService.getAll();
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getAll(){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getAll();
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<DataResponse<ArticleDTO>> create(
+    public ResponseEntity<BaseResponse<ArticleDTO>> create(
             @Valid @RequestBody ArticlePostRequest articlePostRequest,
             BindingResult bindingResult
     ){
-        final DataResponse<ArticleDTO> response = articleService.create(articlePostRequest);
+        final BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
 
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DataResponse<ArticleDTO>> update(
+    public ResponseEntity<BaseResponse<ArticleDTO>> update(
             @PathVariable String id, @Valid @RequestBody ArticlePutRequest articlePutRequest,
             BindingResult bindingResult
     ){
-        final DataResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
+        final BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
 
         return ResponseEntity.ok(response);
     }
