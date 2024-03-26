@@ -1,8 +1,8 @@
 package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -71,8 +71,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
-        SuccessDataResponse<Map<String, String>> responseData =
-                new SuccessDataResponse(HttpServletResponse.SC_UNAUTHORIZED, "", data);
+        BaseResponse<Map<String, String>> responseData =
+                new SuccessDataResponse<>(HttpServletResponse.SC_UNAUTHORIZED, "", data);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
@@ -84,10 +84,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             AuthenticationException failed
     ) throws IOException, ServletException {
         this.securityContextHolderStrategy.clearContext();
-        //this.logger.trace("Failed to process authentication request", failed);
-        //this.logger.trace("Cleared SecurityContextHolder");
-        //this.logger.trace("Handling authentication failure");
-        //this.rememberMeServices.loginFail(request, response);
+        this.getRememberMeServices().loginFail(request, response);
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");

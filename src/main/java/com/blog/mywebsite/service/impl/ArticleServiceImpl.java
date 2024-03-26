@@ -4,6 +4,7 @@ import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -27,7 +28,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public BaseResponse<ArticleDTO> getById(String id) {
-        final ArticleDTO articleDTOs = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTO);
+    }
+
+    @Override
+    public BaseResponse<List<ArticleDTO>> getByYear(int year) {
+        final List<ArticleDTO> articleDTOs =
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateYear(year));
 
         return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
@@ -84,12 +93,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 
     @Override
-    public BaseResponse deleteById(String id) {
+    public BaseResponse<Void> deleteById(String id) {
         final Article article = findById(id);
 
         articleRepository.delete(article);
 
-        return new SuccessDataResponse(HttpStatus.OK.value(), null, EntityConstant.SUCCESS_DELETE);
+        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     private Article findById(String id){

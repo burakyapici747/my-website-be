@@ -1,5 +1,6 @@
 package com.blog.mywebsite;
 
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.model.Article;

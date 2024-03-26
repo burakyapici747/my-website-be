@@ -10,7 +10,7 @@ import java.util.List;
 public interface CommentService {
     BaseResponse<List<CommentDTO>> getAll();
     BaseResponse<CommentDTO> getById(String id);
-    BaseResponse deleteById(String id);
+    BaseResponse<Void> deleteById(String id);
     BaseResponse<CommentDTO> updateById(String id, CommentPutRequest commentUpdateRequest);
     BaseResponse<CommentDTO> create(CommentPostRequest commentPostRequest);
 }

@@ -3,6 +3,8 @@ package com.blog.mywebsite.api;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
+import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.service.ArticleService;
 import jakarta.validation.Valid;
@@ -28,6 +30,13 @@ public class ArticleController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<ArticleDTO>> getById(@PathVariable("id") final String id){
         final BaseResponse<ArticleDTO> response = articleService.getById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/year/{year}")
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByYear(@PathVariable int year){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getByYear(year);
 
         return ResponseEntity.ok(response);
     }

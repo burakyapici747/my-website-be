@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
+    public BaseResponse<Void> deleteById(String id) {
         return null;
     }
 

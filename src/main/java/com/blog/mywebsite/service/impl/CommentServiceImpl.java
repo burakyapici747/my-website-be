@@ -4,6 +4,7 @@ import com.blog.mywebsite.api.request.CommentPostRequest;
 import com.blog.mywebsite.api.request.CommentPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -41,12 +42,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
+    public BaseResponse<Void> deleteById(String id) {
         final Comment comment = findById(id);
 
         commentRepository.delete(comment);
 
-        return new SuccessDataResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE, null);
+        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     @Override
