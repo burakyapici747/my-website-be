@@ -3,6 +3,7 @@ package com.blog.mywebsite.service;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public interface ArticleService {
     BaseResponse<List<ArticleDTO>> getAll();
     BaseResponse<List<ArticleDTO>> getByDate(LocalDate date);
     BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate);
-    BaseResponse deleteById(String id);
+    SuccessResponse deleteById(String id);
     BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest);
     BaseResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest);
 }

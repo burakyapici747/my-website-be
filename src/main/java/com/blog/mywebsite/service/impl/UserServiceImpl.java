@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
         String jwtToken = JWTHelper.generateJwtToken(
                 userCreateRequest.email(),
-                List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
+                List.of(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
         );
 
         final Role role = getRoleForUser();
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Role getRoleForUser(){
-        return roleRepository.findByName(com.blog.mywebsite.enumerator.Role.USER.getValue())
+        return roleRepository.findByName(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
                 .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 }

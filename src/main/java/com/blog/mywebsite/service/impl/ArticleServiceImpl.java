@@ -4,6 +4,7 @@ import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -82,14 +83,13 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
 
-
     @Override
-    public BaseResponse deleteById(String id) {
+    public SuccessResponse deleteById(String id) {
         final Article article = findById(id);
 
         articleRepository.delete(article);
 
-        return new SuccessDataResponse(HttpStatus.OK.value(), null, EntityConstant.SUCCESS_DELETE);
+        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     private Article findById(String id){

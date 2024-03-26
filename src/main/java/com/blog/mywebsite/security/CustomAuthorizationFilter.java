@@ -2,6 +2,8 @@ package com.blog.mywebsite.security;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.blog.mywebsite.api.response.ErrorDataResponse;
+import com.blog.mywebsite.api.response.ErrorResponse;
 import com.blog.mywebsite.constant.SecurityConstant;
 import com.blog.mywebsite.model.CustomUserDetails;
 import com.blog.mywebsite.service.impl.CustomUserDetailsService;
@@ -55,17 +57,21 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
 
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     filterChain.doFilter(request, response);
-                }catch (JWTVerificationException e){
+                }catch (JWTVerificationException error){
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
                     final Map<String, String> errorData = new HashMap<>();
-                    errorData.put("error", e.getMessage());
-                    errorData.put("stackTrace", Arrays.toString(e.getStackTrace()));
-                    errorData.put("path", request.getPathInfo());
+                    errorData.put("path", request.getServletPath());
                     errorData.put("time", LocalDateTime.now().toString());
 
-                    new ObjectMapper().writeValue(response.getOutputStream(), errorData);
+                    ErrorDataResponse<Map<String, String>> errorDataResponse = new ErrorDataResponse<>(
+                            HttpServletResponse.SC_UNAUTHORIZED,
+                            error.getMessage(),
+                            errorData
+                    );
+
+                    new ObjectMapper().writeValue(response.getOutputStream(), errorDataResponse);
                 }
             }else {
                 filterChain.doFilter(request, response);

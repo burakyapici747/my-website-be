@@ -3,6 +3,7 @@ package com.blog.mywebsite.security;
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
 import com.blog.mywebsite.api.response.SuccessResponse;
+import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -31,17 +32,19 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final AuthenticationManager authenticationManager;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     public static final String SPRING_SECURITY_FORM_EMAIL_KEY = "email";
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/user/login", "POST");
     private String emailParameter = "email";
     private boolean postOnly = true;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;
+        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+        super.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
     }
 
-    //TODO Kodu debugladığın zaman unsuccessfulAuthentication metodu kullanılıyor mu? Kontrol et.
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
         attemptAuthenticationValidations(request);

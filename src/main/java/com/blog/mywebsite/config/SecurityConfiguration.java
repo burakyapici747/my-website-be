@@ -1,5 +1,6 @@
 package com.blog.mywebsite.config;
 
+import com.blog.mywebsite.enumerator.Role;
 import com.blog.mywebsite.exception.CustomAccessDeniedHandler;
 import com.blog.mywebsite.exception.CustomAuthenticationEntryPoint;
 import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
@@ -9,6 +10,7 @@ import com.blog.mywebsite.security.EmailAuthenticationProvider;
 import com.blog.mywebsite.service.impl.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,22 +30,34 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfiguration {
     private final CustomUserDetailsService customUserDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
-
     public SecurityConfiguration(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration) {
         this.customUserDetailsService = customUserDetailsService;
         this.authenticationConfiguration = authenticationConfiguration;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationConfiguration authenticationConfiguration) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(getAuthenticationManager(authenticationConfiguration));
+                new CustomAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), customAuthenticationFailureHandler());
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/user/login").permitAll();
-                    auth.requestMatchers("/api/user/register").permitAll();
+                    auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/article/**", "/api/comment/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll();
+                })
+                .authorizeHttpRequests(auth-> {
+                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
+                })
+                .authorizeHttpRequests(auth-> {
+                    auth.requestMatchers(HttpMethod.POST, "/api/comment/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/comment/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/comment/**").hasAuthority("ADMIN");
+                    auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
                     exception.accessDeniedHandler(accessDeniedHandler());
@@ -81,5 +95,10 @@ public class SecurityConfiguration {
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(){
         return new CustomAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public CustomAuthenticationFailureHandler customAuthenticationFailureHandler(){
+        return new CustomAuthenticationFailureHandler();
     }
 }
