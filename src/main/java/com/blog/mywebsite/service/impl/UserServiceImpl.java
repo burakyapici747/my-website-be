@@ -5,7 +5,6 @@ import com.blog.mywebsite.api.response.*;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.UserDTO;
 import com.blog.mywebsite.exception.EntityExistException;
-import com.blog.mywebsite.mapper.UserMapper;
 import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.model.User;
 import com.blog.mywebsite.repository.RoleRepository;
@@ -34,8 +33,6 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    //TODO Kullanıcının oluşturmak istediği mail sistemde kayıtlı değil ise, token oluşturup
-    //TODO Mail adresine link gönderilecek ve mail adresine gelen link üzerinden sisteme giriş yapıp kayıt olmuş olacak.
     @Override
     public BaseResponse<String> create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
@@ -52,14 +49,17 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userCreateRequest.email());
         user.getRoles().add(role);
 
-        final UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(userRepository.save(user));
+        userRepository.save(user);
 
         return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
-        return null;
+    public BaseResponse<Void> deleteById(String id) {
+        final User user = getUserByEmail(id);
+
+        userRepository.delete(user);
+        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     @Override

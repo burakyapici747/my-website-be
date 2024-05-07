@@ -1,5 +1,6 @@
 package com.blog.mywebsite;
 
+import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.model.Article;
@@ -87,7 +88,7 @@ public class ArticleServiceTest {
         doNothing().when(articleRepository).delete(article);
 
         //Act
-        BaseResponse actualBaseResponse = articleService.deleteById(randomUUID.toString());
+        BaseResponse<Void> actualBaseResponse = articleService.deleteById(randomUUID.toString());
 
         //Assertion
         assertNotNull(actualBaseResponse);

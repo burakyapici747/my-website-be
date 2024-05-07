@@ -4,6 +4,7 @@ import com.blog.mywebsite.api.request.CommentPostRequest;
 import com.blog.mywebsite.api.request.CommentPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -19,9 +20,19 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-
     public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public BaseResponse<CommentDTO> create(CommentPostRequest commentPostRequest) {
+        final Comment comment = new Comment();
+        comment.setContent(commentPostRequest.content());
+        comment.setRate(commentPostRequest.rate());
+
+        final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
+
+        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, commentDTO);
     }
 
     @Override
@@ -41,18 +52,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
-        final Comment comment = findById(id);
-
-        commentRepository.delete(comment);
-
-        return new SuccessDataResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE, null);
-    }
-
-    @Override
     public BaseResponse<CommentDTO> updateById(String id, CommentPutRequest commentUpdateRequest) {
         final Comment comment = findById(id);
-
         comment.setContent(commentUpdateRequest.content());
         comment.setRate(commentUpdateRequest.rate());
 
@@ -62,15 +63,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse<CommentDTO> create(CommentPostRequest commentPostRequest) {
+    public BaseResponse<Void> deleteById(String id) {
+        final Comment comment = findById(id);
+
+        commentRepository.delete(comment);
+
+        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+    }
+
+    @Override
+    public BaseResponse<CommentDTO> addReplyToComment(String commentId, CommentPostRequest commentPostRequest){
         final Comment comment = new Comment();
 
-        comment.setContent(commentPostRequest.content());
-        comment.setRate(commentPostRequest.rate());
-
-        final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
-
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, commentDTO);
+        return null;
     }
 
     protected Comment findById(String id){

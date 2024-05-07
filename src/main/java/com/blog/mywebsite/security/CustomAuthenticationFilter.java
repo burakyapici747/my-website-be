@@ -2,7 +2,6 @@ package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
 import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,12 +69,11 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
         //TODO COOKIE eklenecek
 
-
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
         SuccessDataResponse<Map<String, String>> responseData =
-                new SuccessDataResponse(HttpServletResponse.SC_UNAUTHORIZED, "", data);
+                new SuccessDataResponse<>(HttpServletResponse.SC_OK, "", data);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }

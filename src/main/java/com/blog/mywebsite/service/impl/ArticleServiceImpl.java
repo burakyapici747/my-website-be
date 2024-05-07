@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+//TODO Client tarafından gelen Article içerisindeki body vs. gibi alanların kontrolü yapılmalıdır.
+//TODO Zararı olabilecek içeriklerin önlenmesi sağlanmalı.
 @Service
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
@@ -36,7 +37,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public BaseResponse<List<ArticleDTO>> getByDate(LocalDate date) {
         final List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
 
         return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
