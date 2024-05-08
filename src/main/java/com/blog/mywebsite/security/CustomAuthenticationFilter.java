@@ -2,7 +2,8 @@ package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
+import com.blog.mywebsite.api.response.SuccessfulDataResponse;
+import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -36,7 +37,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     private String emailParameter = "email";
     private boolean postOnly = true;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;
     }
@@ -72,7 +73,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         data.put("access_token", accessToken);
 
         BaseResponse<Map<String, String>> responseData =
-                new SuccessDataResponse<>(HttpServletResponse.SC_UNAUTHORIZED, "", data);
+                new SuccessfulDataResponse<>(HttpServletResponse.SC_OK, "", data);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }

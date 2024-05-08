@@ -3,8 +3,8 @@ package com.blog.mywebsite.service.impl;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
+import com.blog.mywebsite.api.response.SuccessfulResponse;
+import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -30,23 +30,23 @@ public class ArticleServiceImpl implements ArticleService {
     public BaseResponse<ArticleDTO> getById(String id) {
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTO);
     }
 
-    @Override
-    public BaseResponse<List<ArticleDTO>> getByYear(int year) {
-        final List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateYear(year));
-
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
-    }
+//    @Override
+//    public BaseResponse<List<ArticleDTO>> getByYear(int year) {
+//        final List<ArticleDTO> articleDTOs =
+//                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateYear(year));
+//
+//        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
+//    }
 
     @Override
     public BaseResponse<List<ArticleDTO>> getByDate(LocalDate date) {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findAll());
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
 
 
@@ -98,7 +98,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleRepository.delete(article);
 
-        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     private Article findById(String id){

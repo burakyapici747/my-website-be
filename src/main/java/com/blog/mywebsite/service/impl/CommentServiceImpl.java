@@ -3,8 +3,8 @@ package com.blog.mywebsite.service.impl;
 import com.blog.mywebsite.api.request.CommentPostRequest;
 import com.blog.mywebsite.api.request.CommentPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.api.response.SuccessResponse;
+import com.blog.mywebsite.api.response.SuccessfulResponse;
+import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.exception.EntityNotFoundException;
@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
         final List<Comment> comments = commentRepository.findAll();
         final List<CommentDTO> commentDTOs = CommentMapper.INSTANCE.commentsToCommentDTOs(comments);
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTOs);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTOs);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
         final Comment comment = findById(id);
         final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(comment);
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTO);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.delete(comment);
 
-        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
         final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, commentDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, commentDTO);
     }
 
     @Override
@@ -71,7 +71,12 @@ public class CommentServiceImpl implements CommentService {
 
         final CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, commentDTO);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, commentDTO);
+    }
+
+    @Override
+    public BaseResponse<CommentDTO> addReplyToComment(String commentId, CommentPostRequest commentPostRequest) {
+        return null;
     }
 
     protected Comment findById(String id){

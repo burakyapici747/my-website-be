@@ -66,7 +66,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
                     errorData.put("time", LocalDateTime.now().toString());
 
                     ErrorDataResponse<Map<String, String>> errorDataResponse = new ErrorDataResponse<>(
-                            HttpServletResponse.SC_UNAUTHORIZED,
+                            HttpServletResponse.SC_OK,
                             error.getMessage(),
                             errorData
                     );
