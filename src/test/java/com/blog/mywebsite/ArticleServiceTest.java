@@ -88,7 +88,7 @@ public class ArticleServiceTest {
         doNothing().when(articleRepository).delete(article);
 
         //Act
-        BaseResponse actualBaseResponse = articleService.deleteById(randomUUID.toString());
+        BaseResponse<Void> actualBaseResponse = articleService.deleteById(randomUUID.toString());
 
         //Assertion
         assertNotNull(actualBaseResponse);

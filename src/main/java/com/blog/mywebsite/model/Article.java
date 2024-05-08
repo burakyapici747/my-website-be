@@ -14,13 +14,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "ARTICLE")
 public class Article extends BaseEntity {
-    @OneToMany
-    @JoinTable(name = "ARTICLE_COMMENT")
+    @OneToMany(
+            targetEntity = Comment.class,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(
+            name = "article_id",
+            referencedColumnName = "id"
+    )
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "ARTICLE_CONTENT_TYPE")
-    private List<ContentType> contentTypes;
+    @ManyToOne
+    @JoinColumn(
+            name = "category_id",
+            referencedColumnName = "id"
+    )
+    private Category category;
 
     @NotBlank(message = "Title cannot be empty")
     @Size(min = 5, max = 255, message = "Title field must be between 5 and 255 characters long.")
