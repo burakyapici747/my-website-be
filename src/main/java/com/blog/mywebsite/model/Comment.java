@@ -8,12 +8,20 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "COMMENT")
 public class Comment extends BaseEntity {
+    private String parentId;
     @NotBlank(message = "Content field cannot be empty.")
     @Size(min = 5, max = 1000, message = "Content field must be between 5 and 1000 characters long.")
     private String content;
-
     @Positive(message = "Rate field cannot be negative.")
     private long rate = 0;
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
     public String getContent() {
         return content;

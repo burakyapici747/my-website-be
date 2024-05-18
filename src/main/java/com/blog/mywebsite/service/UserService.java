@@ -7,6 +7,6 @@ import com.blog.mywebsite.dto.UserDTO;
 public interface UserService {
     BaseResponse<UserDTO> getById(String id);
     BaseResponse<String> create(UserCreateRequest userCreateRequest);
-    BaseResponse deleteById(String id);
+    BaseResponse<Void> deleteById(String id);
     BaseResponse<UserDTO> updateNameById(String id, String name);
 }

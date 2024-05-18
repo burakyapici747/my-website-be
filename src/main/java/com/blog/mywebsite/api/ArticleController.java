@@ -4,6 +4,7 @@ import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
+import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.service.ArticleService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/article")
@@ -32,9 +34,23 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
+//    @GetMapping("/year/{year}")
+//    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByYear(@PathVariable int year){
+//        final BaseResponse<List<ArticleDTO>> response = articleService.getByYear(year);
+//
+//        return ResponseEntity.ok(response);
+//    }
+
     @GetMapping("/date/{date}")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDate(@PathVariable LocalDate date){
         final BaseResponse<List<ArticleDTO>> response = articleService.getByDate(date);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/groupedYear")
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(){
+        final BaseResponse<Map<Integer, List<ArticleDTO>>> response = articleService.getAllGroupedAndDecreasedByYear();
 
         return ResponseEntity.ok(response);
     }

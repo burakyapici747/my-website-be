@@ -1,5 +1,7 @@
 package com.blog.mywebsite.exception;
 
+import com.blog.mywebsite.api.response.ErrorResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,8 +18,14 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             HttpServletResponse response,
             AuthenticationException exception
     ) throws IOException, ServletException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write("{\"message\": \"Erişim yetkiniz yok, lütfen giriş yapın.\"}");
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpServletResponse.SC_BAD_REQUEST,
+                "The login information is incorrect. Please check your information and try again."
+        );
+
+        new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
     }
 }

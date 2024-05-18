@@ -54,11 +54,11 @@ public class UserServiceImpl implements UserService {
 
         final UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(userRepository.save(user));
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }
 
     @Override
-    public BaseResponse deleteById(String id) {
+    public BaseResponse<Void> deleteById(String id) {
         return null;
     }
 
