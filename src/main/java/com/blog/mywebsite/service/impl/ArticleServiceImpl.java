@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -33,13 +35,14 @@ public class ArticleServiceImpl implements ArticleService {
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTO);
     }
 
-//    @Override
-//    public BaseResponse<List<ArticleDTO>> getByYear(int year) {
-//        final List<ArticleDTO> articleDTOs =
-//                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateYear(year));
-//
-//        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
-//    }
+    @Override
+    public BaseResponse<Map<Integer, List<ArticleDTO>>> getAllGroupedAndDecreasedByYear() {
+        final List<ArticleDTO> articleDTOs = ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
+        final Map<Integer, List<ArticleDTO>> groupedArticlesDescendingByYear = articleDTOs.stream()
+                        .collect(Collectors.groupingBy(articleDTO -> articleDTO.publishDate().getYear()));
+
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedArticlesDescendingByYear);
+    }
 
     @Override
     public BaseResponse<List<ArticleDTO>> getByDate(LocalDate date) {
@@ -60,7 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public BaseResponse<List<ArticleDTO>> getAll() {
         final List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findAll());
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
@@ -104,5 +107,9 @@ public class ArticleServiceImpl implements ArticleService {
     private Article findById(String id){
         return articleRepository.findById(id)
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
+    }
+
+    private List<Article> findAll(){
+        return articleRepository.findAll();
     }
 }

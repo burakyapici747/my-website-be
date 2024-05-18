@@ -7,10 +7,11 @@ import com.blog.mywebsite.dto.ArticleDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface ArticleService {
     BaseResponse<ArticleDTO> getById(String id);
-    //BaseResponse<List<ArticleDTO>> getByYear(int year);
+    BaseResponse<Map<Integer, List<ArticleDTO>>> getAllGroupedAndDecreasedByYear();
     BaseResponse<List<ArticleDTO>> getAll();
     BaseResponse<List<ArticleDTO>> getByDate(LocalDate date);
     BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate);
