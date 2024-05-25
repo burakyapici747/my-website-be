@@ -20,7 +20,7 @@ public class MyWebsiteApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//Role role = new Role(com.blog.mywebsite.enumerator.Role.USER.getValue());
-		//roleRepository.save(role);
+		Role role = new Role(com.blog.mywebsite.enumerator.Role.USER.getValue());
+		roleRepository.save(role);
 	}
 }

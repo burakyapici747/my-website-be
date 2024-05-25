@@ -47,11 +47,13 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         return ((CustomUserDetails)this.principal).getEmail();
     }
 
+    @Override
     public void setAuthenticated(boolean isAuthenticated){
         Assert.isTrue(!isAuthenticated, "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
         super.setAuthenticated(false);
     }
 
+    @Override
     public void eraseCredentials(){
         super.eraseCredentials();
         this.credentials = null;

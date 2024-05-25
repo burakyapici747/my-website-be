@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,9 +41,14 @@ public class ArticleServiceImpl implements ArticleService {
     public BaseResponse<Map<Integer, List<ArticleDTO>>> getAllGroupedAndDecreasedByYear() {
         final List<ArticleDTO> articleDTOs = ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
         final Map<Integer, List<ArticleDTO>> groupedArticlesDescendingByYear = articleDTOs.stream()
-                        .collect(Collectors.groupingBy(articleDTO -> articleDTO.publishDate().getYear()));
+                .collect(Collectors.groupingBy(articleDTO -> articleDTO.publishDate().getYear(),
+                        TreeMap::new,
+                        Collectors.toList()));
 
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedArticlesDescendingByYear);
+        final Map<Integer, List<ArticleDTO>> sortedGroupedArticlesDescendingByYear = new TreeMap<>(Collections.reverseOrder());
+        sortedGroupedArticlesDescendingByYear.putAll(groupedArticlesDescendingByYear);
+
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, sortedGroupedArticlesDescendingByYear);
     }
 
     @Override

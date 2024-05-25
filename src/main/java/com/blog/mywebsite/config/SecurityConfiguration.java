@@ -24,6 +24,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -42,17 +44,17 @@ public class SecurityConfiguration {
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                //.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/article/**", "/api/comment/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll();
                 })
-                .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
-                })
+//                .authorizeHttpRequests(auth-> {
+//                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
+//                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
+//                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
+//                })
                 .authorizeHttpRequests(auth-> {
                     auth.requestMatchers(HttpMethod.POST, "/api/comment/**").hasAuthority("ADMIN");
                     auth.requestMatchers(HttpMethod.PUT, "/api/comment/**").hasAuthority("ADMIN");
@@ -100,5 +102,19 @@ public class SecurityConfiguration {
     @Bean
     public CustomAuthenticationFailureHandler customAuthenticationFailureHandler(){
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 }

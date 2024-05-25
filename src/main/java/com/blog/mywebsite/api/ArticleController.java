@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/article")
 @Validated
-public class ArticleController {
+public class ArticleController{
     //:TODO Client üzerinden gelen isteklerde, Body için: size, eleman adet vs. gibi kontroller eklenecek.
     private final ArticleService articleService;
 
