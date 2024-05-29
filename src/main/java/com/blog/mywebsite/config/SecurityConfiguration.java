@@ -48,13 +48,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/article/**", "/api/comment/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/article/groupedYear/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll();
                 })
-//                .authorizeHttpRequests(auth-> {
-//                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
-//                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
-//                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
-//                })
+                .authorizeHttpRequests(auth-> {
+                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
+                })
                 .authorizeHttpRequests(auth-> {
                     auth.requestMatchers(HttpMethod.POST, "/api/comment/**").hasAuthority("ADMIN");
                     auth.requestMatchers(HttpMethod.PUT, "/api/comment/**").hasAuthority("ADMIN");

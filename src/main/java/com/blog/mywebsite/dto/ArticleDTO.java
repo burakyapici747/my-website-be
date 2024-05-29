@@ -8,7 +8,7 @@ public record ArticleDTO(
         String title,
         String content,
         int readingTime,
-        long rate,
+        int rate,
         LocalDate publishDate,
         LocalDateTime createdAt
 ){ }

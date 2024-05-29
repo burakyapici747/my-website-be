@@ -4,7 +4,7 @@ import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
-import com.blog.mywebsite.model.Article;
+import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.service.ArticleService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,43 +20,35 @@ import java.util.Map;
 @RequestMapping("/api/article")
 @Validated
 public class ArticleController{
-    //:TODO Client üzerinden gelen isteklerde, Body için: size, eleman adet vs. gibi kontroller eklenecek.
     private final ArticleService articleService;
 
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<ArticleDTO>> getById(@PathVariable("id") final String id){
-        final BaseResponse<ArticleDTO> response = articleService.getById(id);
+    @GetMapping("/grouped-by-year")
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(
+            @RequestParam("publishDate") LocalDate publishDate,
+            @RequestParam("searchOperation") SearchOperation searchOperation
+    ){
+        final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
+                articleService.getGroupedArticlesByYear(publishDate, searchOperation);
 
         return ResponseEntity.ok(response);
     }
 
-//    @GetMapping("/year/{year}")
-//    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByYear(@PathVariable int year){
-//        final BaseResponse<List<ArticleDTO>> response = articleService.getByYear(year);
-//
-//        return ResponseEntity.ok(response);
-//    }
-
-    @GetMapping("/date/{date}")
-    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDate(@PathVariable LocalDate date){
-        final BaseResponse<List<ArticleDTO>> response = articleService.getByDate(date);
-
-        return ResponseEntity.ok(response);
+    @GetMapping("/grouped-by-category")
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedYearByCategory(
+            @RequestParam String categoryName
+    ){
+        final BaseResponse<Map<Integer, List<ArticleDTO>>> response = null;
+        return null;
     }
 
-    @GetMapping("/groupedYear")
-    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(){
-        final BaseResponse<Map<Integer, List<ArticleDTO>>> response = articleService.getAllGroupedAndDecreasedByYear();
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/between-date/{startDate}/{endDate}")
-    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate){
+    @GetMapping("/between-date")
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
+            @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date") LocalDate endDate
+    ){
         final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
 
         return ResponseEntity.ok(response);

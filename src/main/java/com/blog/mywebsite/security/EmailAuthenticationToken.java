@@ -18,14 +18,22 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         this.setAuthenticated(false);
     }
 
-   public EmailAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+   public EmailAuthenticationToken(
+           Object principal,
+           Object credentials,
+           Collection<? extends GrantedAuthority> authorities
+   ) {
        super(authorities);
        this.principal = principal;
        this.credentials = credentials;
        super.setAuthenticated(true);
    }
 
-    public static EmailAuthenticationToken authenticated(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities){
+    public static EmailAuthenticationToken authenticated(
+            Object principal,
+            Object credentials,
+            Collection<? extends GrantedAuthority> authorities
+    ){
        return new EmailAuthenticationToken(principal, credentials, authorities);
     }
 
@@ -49,7 +57,10 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public void setAuthenticated(boolean isAuthenticated){
-        Assert.isTrue(!isAuthenticated, "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+        Assert.isTrue(
+                !isAuthenticated,
+                "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead"
+        );
         super.setAuthenticated(false);
     }
 

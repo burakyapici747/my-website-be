@@ -3,7 +3,6 @@ package com.blog.mywebsite.security;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.blog.mywebsite.api.response.ErrorDataResponse;
-import com.blog.mywebsite.api.response.ErrorResponse;
 import com.blog.mywebsite.constant.SecurityConstant;
 import com.blog.mywebsite.model.CustomUserDetails;
 import com.blog.mywebsite.service.impl.CustomUserDetailsService;
@@ -17,13 +16,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -52,10 +49,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
                     final DecodedJWT decodedJWT = JWTHelper.decodeJwtToken(authorizationToken);
                     final String email = decodedJWT.getSubject();
                     final CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
-                    final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(customUserDetails.getEmail(), null, customUserDetails.getAuthorities());
+                    final EmailAuthenticationToken emailAuthenticationToken =
+                            new EmailAuthenticationToken(customUserDetails.getEmail(), null, customUserDetails.getAuthorities());
 
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    SecurityContextHolder.getContext().setAuthentication(emailAuthenticationToken);
                     filterChain.doFilter(request, response);
                 }catch (JWTVerificationException error){
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);

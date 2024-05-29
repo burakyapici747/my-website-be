@@ -37,18 +37,22 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     private String emailParameter = "email";
     private boolean postOnly = true;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+    public CustomAuthenticationFilter(
+            AuthenticationManager authenticationManager,
+            CustomAuthenticationFailureHandler customAuthenticationFailureHandler
+    ) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;
     }
 
-    //TODO Kodu debugladığın zaman unsuccessfulAuthentication metodu kullanılıyor mu? Kontrol et.
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Authentication attemptAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
         attemptAuthenticationValidations(request);
 
         final String email = obtainEmail(request);
-
         final EmailAuthenticationToken token = new EmailAuthenticationToken(email, null);
 
         return authenticationManager.authenticate(token);
@@ -96,7 +100,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Nullable
     protected String obtainEmail(HttpServletRequest request) throws IOException {
-        UserLoginRequest userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
+        UserLoginRequest userLoginRequest = new ObjectMapper()
+                .readValue(request.getInputStream(), UserLoginRequest.class);
         return userLoginRequest.getEmail();
     }
 

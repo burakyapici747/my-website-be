@@ -5,22 +5,25 @@ import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
+import com.blog.mywebsite.constant.ArticleConstant;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
+import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.mapper.ArticleMapper;
 import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
+import com.blog.mywebsite.specification.CommonSpecification;
+import com.blog.mywebsite.specification.SearchCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.blog.mywebsite.constant.ArticleConstant.PUBLISH_DATE;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -31,38 +34,55 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public BaseResponse<ArticleDTO> getById(String id) {
-        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(findById(id));
+    public BaseResponse<List<ArticleDTO>> getArticles(
+            SearchOperation searchOperation,
+            String id,
+            LocalDate publishDate,
+            int rate,
+            int readingTime,
+            String categoryName
+    ) {
+        CommonSpecification<Article> specification = new CommonSpecification<>();
+        specification.add(new SearchCriteria(ArticleConstant.ID, id, searchOperation));
+        specification.add(new SearchCriteria(ArticleConstant.PUBLISH_DATE, publishDate, searchOperation));
+        specification.add(new SearchCriteria(ArticleConstant.RATE, rate, searchOperation));
+        specification.add(new SearchCriteria(ArticleConstant.READING_TIME, readingTime, searchOperation));
+        specification.add(new SearchCriteria(ArticleConstant.CATEGORY_ID, categoryName, searchOperation));
 
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTO);
+        List<Article> articleList = articleRepository.findAll(specification);
+        List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
+
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOList);
     }
 
     @Override
-    public BaseResponse<Map<Integer, List<ArticleDTO>>> getAllGroupedAndDecreasedByYear() {
-        final List<ArticleDTO> articleDTOs = ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
-        final Map<Integer, List<ArticleDTO>> groupedArticlesDescendingByYear = articleDTOs.stream()
-                .collect(Collectors.groupingBy(articleDTO -> articleDTO.publishDate().getYear(),
-                        TreeMap::new,
-                        Collectors.toList()));
+    public BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedArticlesByYear(
+            LocalDate publishDate,
+            SearchOperation searchOperation
+    ) {
+        CommonSpecification<Article> specification = new CommonSpecification<>();
+        specification.add(new SearchCriteria(PUBLISH_DATE, publishDate, searchOperation));
 
-        final Map<Integer, List<ArticleDTO>> sortedGroupedArticlesDescendingByYear = new TreeMap<>(Collections.reverseOrder());
-        sortedGroupedArticlesDescendingByYear.putAll(groupedArticlesDescendingByYear);
+        List<Article> articleList = articleRepository.findAll(specification);
+        List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
+        Map<Integer, List<ArticleDTO>> groupedByYear = articleDTOList.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                articleDTO -> articleDTO.publishDate().getYear(),
+                                TreeMap::new,
+                                Collectors.toList()
+                        )
+                );
 
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, sortedGroupedArticlesDescendingByYear);
-    }
-
-    @Override
-    public BaseResponse<List<ArticleDTO>> getByDate(LocalDate date) {
-        final List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDate(date));
-
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
     }
 
     @Override
     public BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
         final List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
+                ArticleMapper.INSTANCE.articlesToArticleDTOs(
+                        articleRepository.findByPublishDateBetween(startDate, endDate)
+                );
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
@@ -100,7 +120,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
-
 
     @Override
     public BaseResponse<Void> deleteById(String id) {
