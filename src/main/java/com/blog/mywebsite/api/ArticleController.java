@@ -33,7 +33,6 @@ public class ArticleController{
     ){
         final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
                 articleService.getGroupedArticlesByYear(publishDate, searchOperation);
-
         return ResponseEntity.ok(response);
     }
 
@@ -42,6 +41,7 @@ public class ArticleController{
             @RequestParam String categoryName
     ){
         final BaseResponse<Map<Integer, List<ArticleDTO>>> response = null;
+
         return null;
     }
 
@@ -50,7 +50,6 @@ public class ArticleController{
             @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date") LocalDate endDate
     ){
         final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
-
         return ResponseEntity.ok(response);
     }
 
@@ -67,7 +66,6 @@ public class ArticleController{
             BindingResult bindingResult
     ){
         final BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
-
         return ResponseEntity.ok(response);
     }
 
@@ -77,7 +75,6 @@ public class ArticleController{
             BindingResult bindingResult
     ){
         final BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
-
         return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,5 @@
 package com.blog.mywebsite;
 
-
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
@@ -15,7 +14,6 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.Mockito.*;
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)

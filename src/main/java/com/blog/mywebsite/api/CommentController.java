@@ -21,21 +21,18 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<BaseResponse<List<CommentDTO>>> getAll(){
         final BaseResponse<List<CommentDTO>> response = commentService.getAll();
-
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<CommentDTO>> getById(@PathVariable("id") final String id){
         final BaseResponse<CommentDTO> response = commentService.getById(id);
-
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<BaseResponse<CommentDTO>> create(@RequestBody CommentPostRequest commentPostRequest){
         final BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
-
         return ResponseEntity.ok(response);
     }
 }

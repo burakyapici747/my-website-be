@@ -3,7 +3,6 @@ package com.blog.mywebsite.security;
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
-import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
 import com.blog.mywebsite.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -38,8 +37,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     private boolean postOnly = true;
 
     public CustomAuthenticationFilter(
-            AuthenticationManager authenticationManager,
-            CustomAuthenticationFailureHandler customAuthenticationFailureHandler
+            AuthenticationManager authenticationManager
     ) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;

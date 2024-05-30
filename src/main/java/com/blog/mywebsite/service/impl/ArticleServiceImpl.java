@@ -5,7 +5,6 @@ import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
-import com.blog.mywebsite.constant.ArticleConstant;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
@@ -23,12 +22,11 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.blog.mywebsite.constant.ArticleConstant.PUBLISH_DATE;
+import static com.blog.mywebsite.constant.ArticleConstant.*;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
-
     public ArticleServiceImpl(ArticleRepository articleRepository) {
         this.articleRepository = articleRepository;
     }
@@ -43,11 +41,11 @@ public class ArticleServiceImpl implements ArticleService {
             String categoryName
     ) {
         CommonSpecification<Article> specification = new CommonSpecification<>();
-        specification.add(new SearchCriteria(ArticleConstant.ID, id, searchOperation));
-        specification.add(new SearchCriteria(ArticleConstant.PUBLISH_DATE, publishDate, searchOperation));
-        specification.add(new SearchCriteria(ArticleConstant.RATE, rate, searchOperation));
-        specification.add(new SearchCriteria(ArticleConstant.READING_TIME, readingTime, searchOperation));
-        specification.add(new SearchCriteria(ArticleConstant.CATEGORY_ID, categoryName, searchOperation));
+        specification.add(new SearchCriteria(ID, id, searchOperation));
+        specification.add(new SearchCriteria(PUBLISH_DATE, publishDate, searchOperation));
+        specification.add(new SearchCriteria(RATE, rate, searchOperation));
+        specification.add(new SearchCriteria(READING_TIME, readingTime, searchOperation));
+        specification.add(new SearchCriteria(CATEGORY_ID, categoryName, searchOperation));
 
         List<Article> articleList = articleRepository.findAll(specification);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
