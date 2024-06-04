@@ -8,6 +8,7 @@ import com.blog.mywebsite.api.response.SuccessfulResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
+import com.blog.mywebsite.exception.EntityExistException;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.mapper.CategoryMapper;
 import com.blog.mywebsite.model.Category;
@@ -15,15 +16,19 @@ import com.blog.mywebsite.repository.CategoryRepository;
 import com.blog.mywebsite.service.CategoryService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import static com.blog.mywebsite.constant.CategoryConstant.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl implements CategoryService{
     private final CategoryRepository categoryRepository;
     public CategoryServiceImpl(CategoryRepository categoryRepository){
         this.categoryRepository = categoryRepository;
@@ -33,7 +38,6 @@ public class CategoryServiceImpl implements CategoryService {
     public BaseResponse<List<CategoryDTO>> getAll() {
         final List<CategoryDTO> categoryDTOList =
                 CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll());
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
     }
 
@@ -55,15 +59,18 @@ public class CategoryServiceImpl implements CategoryService {
         final Category category = findById(id);
 
         categoryRepository.delete(category);
-
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     @Override
     public BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest) {
-        final Category category = new Category();
+        checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
+        Optional<String> optionalParentId = Optional.ofNullable(categoryPostRequest.parentId());
+        optionalParentId.ifPresent(this::findById);
+        checkCategoryIsExistByName(categoryPostRequest.name());
 
-        categoryPostRequest.parentId().ifPresent(parentId-> category.setParent(findById(parentId)));
+        final Category category = new Category();
+        optionalParentId.ifPresent(parentId-> category.setParent(findById(parentId)));
         category.setName(categoryPostRequest.name());
 
         final CategoryDTO categoryDTO =
@@ -74,17 +81,29 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest) {
+        checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         final Category category = findById(id);
 
         CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
 
         final CategoryDTO categoryDTO = CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, categoryDTO);
     }
 
     private Category findById(String id){
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
+    }
+
+    private void checkCategoryIsExistByName(String name){
+        if(categoryRepository.existsByName(name)){
+            throw new EntityExistException("This category name is already in use.");
+        }
+    }
+
+    private <T> void checkDataIsNull(T data, String message){
+        if(Objects.isNull(data)){
+            throw new IllegalArgumentException(message);
+        }
     }
 }

@@ -21,8 +21,12 @@ public class Category extends BaseEntity{
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @OneToMany(mappedBy = "parent")
-    private Set<Category> categories = new HashSet<>();
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "parent"
+    )
+    private Set<Category> subCategories = new HashSet<>();
 
     private String name;
 
@@ -50,11 +54,11 @@ public class Category extends BaseEntity{
         this.parent = parent;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
+    public Set<Category> getSubCategories() {
+        return subCategories;
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public void setSubCategories(Set<Category> categories) {
+        this.subCategories = categories;
     }
 }

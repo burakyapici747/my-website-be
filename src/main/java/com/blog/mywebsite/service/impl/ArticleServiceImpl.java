@@ -89,7 +89,6 @@ public class ArticleServiceImpl implements ArticleService {
     public BaseResponse<List<ArticleDTO>> getAll() {
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
@@ -104,7 +103,6 @@ public class ArticleServiceImpl implements ArticleService {
         article.setPublishDate(LocalDate.parse(articlePostRequest.publishDate()));
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
     }
 
@@ -115,7 +113,6 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleMapper.INSTANCE.articlePutRequestToArticleDTO(articlePutRequest, article);
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
 
@@ -124,7 +121,6 @@ public class ArticleServiceImpl implements ArticleService {
         final Article article = findById(id);
 
         articleRepository.delete(article);
-
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 

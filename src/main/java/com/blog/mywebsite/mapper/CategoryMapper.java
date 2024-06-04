@@ -1,6 +1,5 @@
 package com.blog.mywebsite.mapper;
 
-import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.model.Category;

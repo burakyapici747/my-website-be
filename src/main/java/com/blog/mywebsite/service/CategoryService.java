@@ -4,7 +4,8 @@ import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.CategoryDTO;
-
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 public interface CategoryService {
