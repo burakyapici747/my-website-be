@@ -5,6 +5,7 @@ import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.api.response.SuccessfulResponse;
+import com.blog.mywebsite.common.validator.CommonValidator;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
@@ -16,16 +17,14 @@ import com.blog.mywebsite.repository.CategoryRepository;
 import com.blog.mywebsite.service.CategoryService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.blog.mywebsite.constant.CategoryConstant.*;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -56,22 +55,23 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<Void> deleteById(String id) {
+        checkDataIsNull(id, "Id is cannot be null");
         final Category category = findById(id);
-
         categoryRepository.delete(category);
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     @Override
     public BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest) {
+        this.updateById(categoryPostRequest.parentId(), new CategoryPutRequest("eqiwpeiwqpoeiqwopeiqwpoeiqwopeipwqoeipqwoeipqwoeipqoweiqwpoeiwqpoeiqwpoeipqoweipowqeipwqieowq"));
         checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
-        Optional<String> optionalParentId = Optional.ofNullable(categoryPostRequest.parentId());
-        optionalParentId.ifPresent(this::findById);
+        //CommonValidator.validateInput(categoryPostRequest);
         checkCategoryIsExistByName(categoryPostRequest.name());
 
         final Category category = new Category();
-        optionalParentId.ifPresent(parentId-> category.setParent(findById(parentId)));
         category.setName(categoryPostRequest.name());
+
+        checkParentCategoryExistThenSetParentCategory(categoryPostRequest.parentId(), category);
 
         final CategoryDTO categoryDTO =
                 CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
@@ -80,7 +80,8 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest) {
+    public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest){
+        //CommonValidator.validateInput(categoryPutRequest);
         checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         final Category category = findById(id);
 
@@ -97,13 +98,19 @@ public class CategoryServiceImpl implements CategoryService{
 
     private void checkCategoryIsExistByName(String name){
         if(categoryRepository.existsByName(name)){
-            throw new EntityExistException("This category name is already in use.");
+                throw new EntityExistException("This category name is already in use.");
         }
     }
 
     private <T> void checkDataIsNull(T data, String message){
         if(Objects.isNull(data)){
             throw new IllegalArgumentException(message);
+        }
+    }
+
+    private void checkParentCategoryExistThenSetParentCategory(String parentId, Category category){
+        if(Objects.nonNull(parentId)){
+            category.setParent(findById(parentId));
         }
     }
 }

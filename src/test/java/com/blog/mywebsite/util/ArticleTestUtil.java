@@ -4,15 +4,12 @@ import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 import static com.blog.mywebsite.constant.ArticleTestConstant.*;
 
 public final class ArticleTestUtil {
-    private ArticleTestUtil() {
-
-    }
+    private ArticleTestUtil() {throw new AssertionError();}
 
     public static ArticlePostRequest createArticlePostRequest() {
         return new ArticlePostRequest(

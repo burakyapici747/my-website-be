@@ -3,9 +3,9 @@ package com.blog.mywebsite.specification;
 import com.blog.mywebsite.enumerator.SearchOperation;
 
 public class SearchCriteria {
-    private String key;
-    private Object value;
-    private SearchOperation searchOperation;
+    private final String key;
+    private final Object value;
+    private final SearchOperation searchOperation;
 
     public SearchCriteria(String key, Object value, SearchOperation searchOperation){
         this.key = key;

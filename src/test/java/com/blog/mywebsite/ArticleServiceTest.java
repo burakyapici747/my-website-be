@@ -29,6 +29,8 @@ public class ArticleServiceTest {
         /*
         * given valid input then create article
         * given invalid inputs then
+        *
+        * given ExistingCategoryName
         * */
 
         @Test
@@ -55,6 +57,5 @@ public class ArticleServiceTest {
          * given valid input then create article
          * given invalid inputs then
          * */
-
     }
 }
