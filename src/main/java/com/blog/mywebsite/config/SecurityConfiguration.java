@@ -6,6 +6,7 @@ import static com.blog.mywebsite.constant.APIConstant.*;
 import com.blog.mywebsite.exception.CustomAccessDeniedHandler;
 import com.blog.mywebsite.exception.CustomAuthenticationEntryPoint;
 import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
+import com.blog.mywebsite.security.CookieAuthenticationFilter;
 import com.blog.mywebsite.security.CustomAuthenticationFilter;
 import com.blog.mywebsite.security.CustomAuthorizationFilter;
 import com.blog.mywebsite.security.EmailAuthenticationProvider;
@@ -83,6 +84,7 @@ public class SecurityConfiguration {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(customAuthenticationFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(new CookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CustomAuthorizationFilter(customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
