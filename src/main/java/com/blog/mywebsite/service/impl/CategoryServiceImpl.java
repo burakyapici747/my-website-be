@@ -19,6 +19,7 @@ import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.blog.mywebsite.constant.CategoryConstant.*;
 
@@ -62,8 +63,9 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest) {
+        this.updateById(categoryPostRequest.parentId(), new CategoryPutRequest("eqiwpeiwqpoeiqwopeiqwpoeiqwopeipwqoeipqwoeipqwoeipqoweiqwpoeiwqpoeiqwpoeipqoweipowqeipwqieowq"));
         checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
-        CommonValidator.validateInput(categoryPostRequest);
+        //CommonValidator.validateInput(categoryPostRequest);
         checkCategoryIsExistByName(categoryPostRequest.name());
 
         final Category category = new Category();
@@ -79,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest){
-        CommonValidator.validateInput(categoryPutRequest);
+        //CommonValidator.validateInput(categoryPutRequest);
         checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         final Category category = findById(id);
 

@@ -31,6 +31,7 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final AuthenticationManager authenticationManager;
+    public static final String SPRING_SECURITY_FORM_EMAIL_KEY = "email";
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/user/login", "POST");
     private String emailParameter = "email";
     private boolean postOnly = true;
@@ -68,6 +69,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         response.setStatus(HttpStatus.OK.value());
 
         //TODO COOKIE eklenecek
+
 
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
