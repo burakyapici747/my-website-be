@@ -2,12 +2,14 @@ package com.blog.mywebsite.constant;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public final class ArticleTestConstant {
     private ArticleTestConstant() {
 
     }
 
+    public static final String CATEGORY_ID = UUID.randomUUID().toString();
     public static final String TITLE = "Micro Service";
     public static final String CONTENT = "Content";
     public static final int RATE = 5;

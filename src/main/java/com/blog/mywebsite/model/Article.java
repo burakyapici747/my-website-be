@@ -95,4 +95,7 @@ public class Article extends BaseEntity {
     public void setPublishDate(LocalDate publishDate){
         this.publishDate = publishDate;
     }
+    public void setCategory(Category category){
+        this.category = category;
+    }
 }

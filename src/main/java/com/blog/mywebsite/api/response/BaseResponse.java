@@ -6,7 +6,7 @@ public abstract class BaseResponse<T>{
     public final String message;
     public final T data;
 
-    public BaseResponse(boolean isSuccess, int httpStatus, String message, T data){
+    protected BaseResponse(boolean isSuccess, int httpStatus, String message, T data){
         this.isSuccess = isSuccess;
         this.httpStatusCode = httpStatus;
         this.message = message;

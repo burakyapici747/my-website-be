@@ -6,6 +6,7 @@ public class APIConstant {
     }
 
     public static final String BASE_URL = "/api";
+    public static final String LOGIN = BASE_URL + "/user/login";
     public static final String CATEGORY_URL = BASE_URL + "/category";
     public static final String ARTICLE_URL = BASE_URL + "/article";
     public static final String COMMENT_URL = BASE_URL + "/comment";

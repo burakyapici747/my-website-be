@@ -10,5 +10,5 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<Article, String>, JpaSpecificationExecutor<Article> {
     List<Article> findByPublishDate(LocalDate date);
     List<Article> findByPublishDateBetween(LocalDate startDate, LocalDate endDate);
-    //List<Article> findByPublishDateYear(int year);
+    List<Article> findByCategoryName(String categoryName);
 }

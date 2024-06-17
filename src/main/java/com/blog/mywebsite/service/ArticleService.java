@@ -23,6 +23,7 @@ public interface ArticleService {
             LocalDate publishDate,
             SearchOperation searchOperation
     );
+    BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedYearByCategoryName(String categoryName);
     BaseResponse<List<ArticleDTO>> getAll();
     BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate);
     BaseResponse<Void> deleteById(String id);

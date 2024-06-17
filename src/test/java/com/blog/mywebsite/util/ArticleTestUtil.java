@@ -13,6 +13,7 @@ public final class ArticleTestUtil {
 
     public static ArticlePostRequest createArticlePostRequest() {
         return new ArticlePostRequest(
+                CATEGORY_ID,
                 TITLE,
                 CONTENT,
                 READING_TIME,

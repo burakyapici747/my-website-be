@@ -4,8 +4,7 @@ import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.CategoryDTO;
-import jakarta.validation.Valid;
-import org.springframework.validation.annotation.Validated;
+import com.blog.mywebsite.model.Category;
 import java.util.List;
 
 public interface CategoryService {
@@ -14,4 +13,5 @@ public interface CategoryService {
     BaseResponse<Void> deleteById(String id);
     BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest);
     BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest);
+    Category findById(String id);
 }

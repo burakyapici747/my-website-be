@@ -1,4 +1,4 @@
-package com.blog.mywebsite.util.security;
+package com.blog.mywebsite.common.util.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

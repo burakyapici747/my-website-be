@@ -3,7 +3,7 @@ package com.blog.mywebsite.security;
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
-import com.blog.mywebsite.util.security.JWTHelper;
+import com.blog.mywebsite.common.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;

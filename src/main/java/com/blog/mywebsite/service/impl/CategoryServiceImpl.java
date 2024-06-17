@@ -5,6 +5,7 @@ import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.api.response.SuccessfulResponse;
+import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.common.validator.CommonValidator;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CategoryDTO;
@@ -54,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<Void> deleteById(String id) {
-        checkDataIsNull(id, "Id is cannot be null");
+        ValueUtil.checkDataIsNull(id, "Id is cannot be null");
         final Category category = findById(id);
         categoryRepository.delete(category);
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
@@ -62,13 +63,12 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest) {
-        checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
+        ValueUtil.checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
         CommonValidator.validateInput(categoryPostRequest);
         checkCategoryIsExistByName(categoryPostRequest.name());
 
         final Category category = new Category();
         category.setName(categoryPostRequest.name());
-
         checkParentCategoryExistThenSetParentCategory(categoryPostRequest.parentId(), category);
 
         final CategoryDTO categoryDTO =
@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest){
         CommonValidator.validateInput(categoryPutRequest);
-        checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
+        ValueUtil.checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         final Category category = findById(id);
 
         CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
@@ -89,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService{
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, categoryDTO);
     }
 
-    private Category findById(String id){
+    public Category findById(String id){
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
@@ -97,12 +97,6 @@ public class CategoryServiceImpl implements CategoryService{
     private void checkCategoryIsExistByName(String name){
         if(categoryRepository.existsByName(name)){
                 throw new EntityExistException("This category name is already in use.");
-        }
-    }
-
-    private <T> void checkDataIsNull(T data, String message){
-        if(Objects.isNull(data)){
-            throw new IllegalArgumentException(message);
         }
     }
 

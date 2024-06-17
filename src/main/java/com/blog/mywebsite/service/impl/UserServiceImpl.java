@@ -10,7 +10,7 @@ import com.blog.mywebsite.model.User;
 import com.blog.mywebsite.repository.RoleRepository;
 import com.blog.mywebsite.repository.UserRepository;
 import com.blog.mywebsite.service.UserService;
-import com.blog.mywebsite.util.security.JWTHelper;
+import com.blog.mywebsite.common.util.security.JWTHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

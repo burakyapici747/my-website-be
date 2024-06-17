@@ -36,13 +36,13 @@ public class ArticleController{
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/grouped-by-category")
-    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedYearByCategory(
+    @GetMapping("/grouped-by-year-category-name")
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedYearByCategoryName(
             @RequestParam String categoryName
     ){
-        final BaseResponse<Map<Integer, List<ArticleDTO>>> response = null;
-
-        return null;
+        final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
+                articleService.getGroupedYearByCategoryName(categoryName);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/between-date")
@@ -56,7 +56,6 @@ public class ArticleController{
     @GetMapping
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getAll(){
         final BaseResponse<List<ArticleDTO>> response = articleService.getAll();
-
         return ResponseEntity.ok(response);
     }
 

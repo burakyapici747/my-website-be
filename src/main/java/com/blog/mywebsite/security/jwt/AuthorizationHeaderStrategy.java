@@ -13,6 +13,7 @@ public class AuthorizationHeaderStrategy implements JWTStrategy{
 
     @Override
     public String extractToken() {
-        return request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return authorizationHeader.substring(SecurityConstant.AUTHORIZATION_TOKEN_PREFIX.length());
     }
 }

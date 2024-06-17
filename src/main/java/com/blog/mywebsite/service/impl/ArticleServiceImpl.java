@@ -5,6 +5,7 @@ import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.api.response.SuccessfulResponse;
 import com.blog.mywebsite.api.response.SuccessfulDataResponse;
+import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
@@ -13,6 +14,7 @@ import com.blog.mywebsite.mapper.ArticleMapper;
 import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
+import com.blog.mywebsite.service.CategoryService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,10 @@ import static com.blog.mywebsite.constant.ArticleConstant.*;
 @Service
 public class ArticleServiceImpl implements ArticleService {
     private final ArticleRepository articleRepository;
-    public ArticleServiceImpl(ArticleRepository articleRepository) {
+    private final CategoryService categoryService;
+    public ArticleServiceImpl(ArticleRepository articleRepository, CategoryService categoryService) {
         this.articleRepository = articleRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -76,6 +80,19 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedYearByCategoryName(String categoryName) {
+        List<Article> articleList = articleRepository.findByCategoryName(categoryName);
+        List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
+        Map<Integer, List<ArticleDTO>> groupedByYear = articleDTOList.stream()
+                .collect(Collectors.groupingBy(
+                        articleDTO -> articleDTO.publishDate().getYear(),
+                        Collectors.toList()
+                ));
+
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
+    }
+
+    @Override
     public BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
         final List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(
@@ -94,13 +111,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
-        final Article article = new Article();
+        ValueUtil.checkDataIsNull(articlePostRequest, "ArticlePostRequest is can not be null.");
 
+        final Article article = new Article();
         article.setTitle(articlePostRequest.title());
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
         article.setRate(0);
         article.setPublishDate(LocalDate.parse(articlePostRequest.publishDate()));
+        checkCategoryExistAndSetArticleCategoryName(articlePostRequest.categoryId(), article);
 
         final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
@@ -131,5 +150,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     private List<Article> findAll(){
         return articleRepository.findAll();
+    }
+
+    private void checkCategoryExistAndSetArticleCategoryName(String categoryId, Article article){
+        if(Objects.nonNull(categoryId)){
+            article.setCategory(categoryService.findById(categoryId));
+        }
     }
 }
