@@ -10,7 +10,7 @@ public record CommentPostRequest(
         @NotBlank(message = "ArticleId cannot be empty or null.")
         @Size(max = 36, message = "ArticleId field must be 36 characters long.")
         String articleId,
-        @NullableSize(size = 36, message = "CommentParentId field must be empty or 36 characters long.")
+        @NullableSize(message = "CommentParentId field must be empty or 36 characters long.")
         String commentParentId,
         @NotBlank(message = "Content cannot be empty or null.")
         @Size(max = 100, message = "Title field must be between 5 and 255 characters long.")
