@@ -1,14 +1,18 @@
 package com.blog.mywebsite.api.request;
 
+import com.blog.mywebsite.validation.NullableSize;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-//TODO: Message alanlarını ingilizce olarak değiştir
+@Valid
 public record CommentPostRequest(
-        @NotBlank(message = "Content alanı boş bırakılamaz!")
-        @Size(max = 100, message = "Content max 100 karakter olabilir!")
-        String content,
-        @Positive(message = "Rate sadece pozitif olabilir!")
-        long rate
+        @NotBlank(message = "ArticleId cannot be empty or null.")
+        @Size(max = 36, message = "ArticleId field must be 36 characters long.")
+        String articleId,
+        @NullableSize(size = 36, message = "CommentParentId field must be empty or 36 characters long.")
+        String commentParentId,
+        @NotBlank(message = "Content cannot be empty or null.")
+        @Size(max = 100, message = "Title field must be between 5 and 255 characters long.")
+        String content
 ) { }

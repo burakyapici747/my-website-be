@@ -53,7 +53,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<Article> articleList = articleRepository.findAll(specification);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOList);
     }
 
@@ -75,7 +74,6 @@ public class ArticleServiceImpl implements ArticleService {
                                 Collectors.toList()
                         )
                 );
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
     }
 
@@ -88,13 +86,12 @@ public class ArticleServiceImpl implements ArticleService {
                         articleDTO -> articleDTO.publishDate().getYear(),
                         Collectors.toList()
                 ));
-
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
     }
 
     @Override
     public BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate){
-        final List<ArticleDTO> articleDTOs =
+        List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(
                         articleRepository.findByPublishDateBetween(startDate, endDate)
                 );
@@ -104,7 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public BaseResponse<List<ArticleDTO>> getAll() {
-        final List<ArticleDTO> articleDTOs =
+        List<ArticleDTO> articleDTOs =
                 ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
@@ -113,7 +110,7 @@ public class ArticleServiceImpl implements ArticleService {
     public BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest) {
         ValueUtil.checkDataIsNull(articlePostRequest, "ArticlePostRequest is can not be null.");
 
-        final Article article = new Article();
+        Article article = new Article();
         article.setTitle(articlePostRequest.title());
         article.setContent(articlePostRequest.content());
         article.setReadingTime(articlePostRequest.readingTime());
@@ -121,23 +118,23 @@ public class ArticleServiceImpl implements ArticleService {
         article.setPublishDate(LocalDate.parse(articlePostRequest.publishDate()));
         checkCategoryExistAndSetArticleCategoryName(articlePostRequest.categoryId(), article);
 
-        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
+        ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, articleDTO);
     }
 
     @Override
     public BaseResponse<ArticleDTO> updateById(String id, ArticlePutRequest articlePutRequest) {
-        final Article article = findById(id);
+        Article article = findById(id);
 
         ArticleMapper.INSTANCE.articlePutRequestToArticleDTO(articlePutRequest, article);
 
-        final ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
+        ArticleDTO articleDTO = ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, articleDTO);
     }
 
     @Override
     public BaseResponse<Void> deleteById(String id) {
-        final Article article = findById(id);
+        Article article = findById(id);
 
         articleRepository.delete(article);
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);

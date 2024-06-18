@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public BaseResponse<List<CategoryDTO>> getAll() {
-        final List<CategoryDTO> categoryDTOList =
+        List<CategoryDTO> categoryDTOList =
                 CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll());
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
     }
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService{
         commonSpecification.add(new SearchCriteria(PARENT_ID, parentId, SearchOperation.EQUAL));
         commonSpecification.add(new SearchCriteria(NAME, name, SearchOperation.EQUAL));
 
-        final List<CategoryDTO> categoryDTOList =
+        List<CategoryDTO> categoryDTOList =
                 CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll(commonSpecification));
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public BaseResponse<Void> deleteById(String id) {
         ValueUtil.checkDataIsNull(id, "Id is cannot be null");
-        final Category category = findById(id);
+        Category category = findById(id);
         categoryRepository.delete(category);
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
@@ -67,11 +67,11 @@ public class CategoryServiceImpl implements CategoryService{
         CommonValidator.validateInput(categoryPostRequest);
         checkCategoryIsExistByName(categoryPostRequest.name());
 
-        final Category category = new Category();
+        Category category = new Category();
         category.setName(categoryPostRequest.name());
         checkParentCategoryExistThenSetParentCategory(categoryPostRequest.parentId(), category);
 
-        final CategoryDTO categoryDTO =
+        CategoryDTO categoryDTO =
                 CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, categoryDTO);
@@ -81,11 +81,11 @@ public class CategoryServiceImpl implements CategoryService{
     public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest){
         CommonValidator.validateInput(categoryPutRequest);
         ValueUtil.checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
-        final Category category = findById(id);
+        Category category = findById(id);
 
         CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
 
-        final CategoryDTO categoryDTO = CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
+        CategoryDTO categoryDTO = CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, categoryDTO);
     }
 

@@ -42,12 +42,13 @@ public class UserServiceImpl implements UserService {
                 List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
         );
 
-        final Role role = getRoleForUser();
-        final User user = new User();
-
+        Role role = getRoleForUser();
+        User user = new User();
         user.setName(userCreateRequest.name());
         user.setEmail(userCreateRequest.email());
         user.getRoles().add(role);
+
+        userRepository.save(user);
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }

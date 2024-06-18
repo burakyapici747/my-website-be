@@ -19,7 +19,6 @@ import java.util.Set;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
-    //TODO message içeriğini düzelt
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseResponse<Map<String, String>> handleConstraintViolationException(
@@ -27,9 +26,7 @@ public class GlobalExceptionHandler{
     ){
         Map<String, String> errors = new HashMap<>();
         Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
-        violations.forEach(violation -> {
-            errors.put(violation.getPropertyPath().toString(), violation.getMessage());
-        });
+        violations.forEach(violation -> errors.put(violation.getPropertyPath().toString(), violation.getMessage()));
         return new ErrorDataResponse<>(HttpStatus.BAD_REQUEST.value(), "", errors);
     }
 
