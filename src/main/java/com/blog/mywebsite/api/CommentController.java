@@ -45,7 +45,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<CommentDTO>> create(
-            @Valid @RequestBody CommentPostRequest commentPostRequest,
+            @RequestBody @Valid CommentPostRequest commentPostRequest,
             BindingResult bindingResult
     ){
         final BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);

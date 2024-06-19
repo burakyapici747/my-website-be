@@ -2,12 +2,10 @@ package com.blog.mywebsite.api.request;
 
 import com.blog.mywebsite.validation.ISO8601Validation;
 import com.blog.mywebsite.validation.NullableSize;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-@Valid
 public record ArticlePostRequest(
         @NullableSize(size = 36, message = "CategoryId field must be empty or 36 characters long.")
         String categoryId,

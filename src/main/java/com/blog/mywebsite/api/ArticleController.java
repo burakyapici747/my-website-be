@@ -61,7 +61,7 @@ public class ArticleController{
 
     @PostMapping
     public ResponseEntity<BaseResponse<ArticleDTO>> create(
-            @Valid @RequestBody ArticlePostRequest articlePostRequest,
+            @RequestBody @Valid ArticlePostRequest articlePostRequest,
             BindingResult bindingResult
     ){
         final BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
@@ -70,7 +70,7 @@ public class ArticleController{
 
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse<ArticleDTO>> update(
-            @PathVariable String id, @Valid @RequestBody ArticlePutRequest articlePutRequest,
+            @PathVariable String id, @RequestBody @Valid ArticlePutRequest articlePutRequest,
             BindingResult bindingResult
     ){
         final BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);

@@ -80,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = new Comment();
         comment.setContent(commentPostRequest.content());
-        checkParentCommentExistThenSetParentComment(commentPostRequest.commentParentId(), comment);
+        checkParentCommentExistThenSetParentComment(commentPostRequest.parentId(), comment);
 
         CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, commentDTO);

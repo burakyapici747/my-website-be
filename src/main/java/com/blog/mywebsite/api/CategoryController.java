@@ -39,9 +39,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> create(
-            @Valid @RequestBody CategoryPostRequest categoryPostRequest
-    ){
+    public ResponseEntity<BaseResponse<CategoryDTO>> create(@RequestBody @Valid CategoryPostRequest categoryPostRequest){
         final BaseResponse<CategoryDTO> response = categoryService.create(categoryPostRequest);
         return ResponseEntity.ok(response);
     }
@@ -49,16 +47,14 @@ public class CategoryController {
     @PutMapping
     public ResponseEntity<BaseResponse<CategoryDTO>> updateById(
             @RequestParam("id") String id,
-            @Valid @RequestBody CategoryPutRequest categoryPutRequest
+            @RequestBody @Valid CategoryPutRequest categoryPutRequest
     ) {
         final BaseResponse<CategoryDTO> response = categoryService.updateById(id, categoryPutRequest);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseResponse<Void>> deleteById(
-            @RequestParam("id") String id
-    ){
+    public ResponseEntity<BaseResponse<Void>> deleteById(@RequestParam("id") String id){
         final BaseResponse<Void> response = categoryService.deleteById(id);
         return ResponseEntity.ok(response);
     }
