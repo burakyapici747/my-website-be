@@ -2,26 +2,28 @@ package com.blog.mywebsite.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "COMMENT")
 public class Comment extends BaseEntity {
-    private String parentId;
     @NotBlank(message = "Content field cannot be empty.")
     @Size(min = 5, max = 1000, message = "Content field must be between 5 and 1000 characters long.")
     private String content;
-    @Positive(message = "Rate field cannot be negative.")
-    private long rate = 0;
 
-    public String getParentId() {
-        return parentId;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "parent"
+    )
+    private Set<Comment> subComments = new HashSet<>();
 
     public String getContent() {
         return content;
@@ -31,11 +33,19 @@ public class Comment extends BaseEntity {
         this.content = content;
     }
 
-    public long getRate() {
-        return rate;
+    public Comment getParent() {
+        return parent;
     }
 
-    public void setRate(long rate) {
-        this.rate = rate;
+    public void setParent(Comment parent) {
+        this.parent = parent;
+    }
+
+    public Set<Comment> getSubComments() {
+        return subComments;
+    }
+
+    public void setSubComments(Set<Comment> subComments) {
+        this.subComments = subComments;
     }
 }

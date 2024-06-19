@@ -1,9 +1,9 @@
 package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
-import com.blog.mywebsite.api.response.SuccessDataResponse;
-import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
-import com.blog.mywebsite.util.security.JWTHelper;
+import com.blog.mywebsite.api.response.BaseResponse;
+import com.blog.mywebsite.api.response.SuccessfulDataResponse;
+import com.blog.mywebsite.common.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
@@ -31,25 +31,25 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final AuthenticationManager authenticationManager;
-    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
-    public static final String SPRING_SECURITY_FORM_EMAIL_KEY = "email";
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/user/login", "POST");
     private String emailParameter = "email";
     private boolean postOnly = true;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+    public CustomAuthenticationFilter(
+            AuthenticationManager authenticationManager
+    ) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;
-        this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
-        super.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Authentication attemptAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
         attemptAuthenticationValidations(request);
 
         final String email = obtainEmail(request);
-
         final EmailAuthenticationToken token = new EmailAuthenticationToken(email, null);
 
         return authenticationManager.authenticate(token);
@@ -72,8 +72,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
-        SuccessDataResponse<Map<String, String>> responseData =
-                new SuccessDataResponse<>(HttpServletResponse.SC_OK, "", data);
+        BaseResponse<Map<String, String>> responseData =
+                new SuccessfulDataResponse<>(HttpServletResponse.SC_OK, "", data);
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
@@ -85,10 +85,7 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             AuthenticationException failed
     ) throws IOException, ServletException {
         this.securityContextHolderStrategy.clearContext();
-        //this.logger.trace("Failed to process authentication request", failed);
-        //this.logger.trace("Cleared SecurityContextHolder");
-        //this.logger.trace("Handling authentication failure");
-        //this.rememberMeServices.loginFail(request, response);
+        this.getRememberMeServices().loginFail(request, response);
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
@@ -99,7 +96,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
 
     @Nullable
     protected String obtainEmail(HttpServletRequest request) throws IOException {
-        UserLoginRequest userLoginRequest = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequest.class);
+        UserLoginRequest userLoginRequest = new ObjectMapper()
+                .readValue(request.getInputStream(), UserLoginRequest.class);
         return userLoginRequest.getEmail();
     }
 

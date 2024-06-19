@@ -10,7 +10,7 @@ import com.blog.mywebsite.model.User;
 import com.blog.mywebsite.repository.RoleRepository;
 import com.blog.mywebsite.repository.UserRepository;
 import com.blog.mywebsite.service.UserService;
-import com.blog.mywebsite.util.security.JWTHelper;
+import com.blog.mywebsite.common.util.security.JWTHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,27 +39,23 @@ public class UserServiceImpl implements UserService {
 
         String jwtToken = JWTHelper.generateJwtToken(
                 userCreateRequest.email(),
-                List.of(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
+                List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
         );
 
-        final Role role = getRoleForUser();
-        final User user = new User();
-
+        Role role = getRoleForUser();
+        User user = new User();
         user.setName(userCreateRequest.name());
         user.setEmail(userCreateRequest.email());
         user.getRoles().add(role);
 
         userRepository.save(user);
 
-        return new SuccessDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }
 
     @Override
     public BaseResponse<Void> deleteById(String id) {
-        final User user = getUserByEmail(id);
-
-        userRepository.delete(user);
-        return new SuccessResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return null;
     }
 
     @Override
@@ -79,7 +75,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private Role getRoleForUser(){
-        return roleRepository.findByName(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
+        return roleRepository.findByName(com.blog.mywebsite.enumerator.Role.USER.getValue())
                 .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 }

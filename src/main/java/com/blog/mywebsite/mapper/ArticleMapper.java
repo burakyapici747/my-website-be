@@ -11,11 +11,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
     ArticleMapper INSTANCE = Mappers.getMapper(ArticleMapper.class);
-
     ArticleDTO articleToArticleDTO(Article article);
-
     List<ArticleDTO> articlesToArticleDTOs(List<Article> articles);
-
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void articlePutRequestToArticleDTO(ArticlePutRequest articlePutRequest, @MappingTarget Article article);
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Map;
 
 public class SecurityExceptionHandler {
-
     @ExceptionHandler(EmailNotFoundException.class)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BaseResponse<Map<String, String>> handleEmailNotFoundException(EmailNotFoundException exception){

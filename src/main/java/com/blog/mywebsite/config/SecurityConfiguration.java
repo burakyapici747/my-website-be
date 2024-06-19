@@ -1,6 +1,8 @@
 package com.blog.mywebsite.config;
 
-import com.blog.mywebsite.enumerator.Role;
+import static com.blog.mywebsite.enumerator.Role.*;
+
+import static com.blog.mywebsite.constant.APIConstant.*;
 import com.blog.mywebsite.exception.CustomAccessDeniedHandler;
 import com.blog.mywebsite.exception.CustomAuthenticationEntryPoint;
 import com.blog.mywebsite.exception.CustomAuthenticationFailureHandler;
@@ -24,39 +26,53 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
     private final CustomUserDetailsService customUserDetailsService;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    public SecurityConfiguration(CustomUserDetailsService customUserDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    public SecurityConfiguration(
+            CustomUserDetailsService customUserDetailsService
+    ) {
         this.customUserDetailsService = customUserDetailsService;
-        this.authenticationConfiguration = authenticationConfiguration;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(getAuthenticationManager(authenticationConfiguration), customAuthenticationFailureHandler());
+                new CustomAuthenticationFilter(getAuthenticationManager(authenticationConfiguration));
+        customAuthenticationFilter
+                .setAuthenticationFailureHandler(customAuthenticationFailureHandlercustomAuthenticationFailureHandler());
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                //.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/article/**", "/api/comment/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE).permitAll();
+                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE +"groupedYear/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, ALL_COMMENT).permitAll();
+                    auth.requestMatchers(HttpMethod.GET, ALL_CATEGORY).permitAll();
                 })
                 .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, "/api/article/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/article/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/article/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
                 })
                 .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, "/api/comment/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT, "/api/comment/**").hasAuthority("ADMIN");
-                    auth.requestMatchers(HttpMethod.DELETE, "/api/comment/**").hasAuthority("ADMIN");
+                    auth.requestMatchers(HttpMethod.POST, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
+                })
+                .authorizeHttpRequests(auth-> {
+                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_COMMENT).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_COMMENT).hasAuthority(ADMIN.getValue());
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {
@@ -73,7 +89,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager getAuthenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager getAuthenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -98,7 +116,21 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public CustomAuthenticationFailureHandler customAuthenticationFailureHandler(){
+    public CustomAuthenticationFailureHandler customAuthenticationFailureHandlercustomAuthenticationFailureHandler(){
         return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 }
