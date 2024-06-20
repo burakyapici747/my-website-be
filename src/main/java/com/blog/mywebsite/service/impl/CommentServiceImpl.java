@@ -51,13 +51,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse<CommentDTO> getById(String id) {
-        Comment comment = findById(id);
-        CommentDTO commentDTO = CommentMapper.INSTANCE.commentToCommentDTO(comment);
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTO);
-    }
-
-    @Override
     public BaseResponse<Void> deleteById(String id) {
         Comment comment = findById(id);
 

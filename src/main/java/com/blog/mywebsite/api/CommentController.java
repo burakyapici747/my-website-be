@@ -1,6 +1,7 @@
 package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.request.CommentPostRequest;
+import com.blog.mywebsite.api.request.CommentPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.service.CommentService;
@@ -37,12 +38,6 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<CommentDTO>> getById(@PathVariable("id") final String id){
-        final BaseResponse<CommentDTO> response = commentService.getById(id);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping
     public ResponseEntity<BaseResponse<CommentDTO>> create(
             @RequestBody @Valid CommentPostRequest commentPostRequest,
@@ -50,5 +45,15 @@ public class CommentController {
     ){
         final BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<BaseResponse<CommentDTO>> updateById(
+            @RequestParam(value = "id") String id,
+            @RequestBody @Valid CommentPutRequest commentPutRequest
+            ){
+
+
+        return null;
     }
 }

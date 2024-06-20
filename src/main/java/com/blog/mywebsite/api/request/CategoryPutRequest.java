@@ -1,10 +1,11 @@
 package com.blog.mywebsite.api.request;
 
-import jakarta.validation.constraints.NotBlank;
+import com.blog.mywebsite.validation.NullableSize;
 import jakarta.validation.constraints.Size;
 
 public record CategoryPutRequest(
-        @NotBlank(message = "Id cannot be empty or null.")
-        @Size(min = 36, max = 36, message = "ParentId field must be 36 characters long.")
-        String id
+        @NullableSize(message = "ParentId field must be empty or 36 characters long.")
+        String parentId,
+        @Size(max = 55, message = "Name field maximum must be 55 characters long.")
+        String name
 ) { }

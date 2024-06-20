@@ -82,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService{
         CommonValidator.validateInput(categoryPutRequest);
         ValueUtil.checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         Category category = findById(id);
+        checkParentCategoryExistThenSetParentCategory(categoryPutRequest.parentId(), category);
 
         CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
 
