@@ -24,7 +24,10 @@ import org.springframework.stereotype.Service;
 import static com.blog.mywebsite.constant.CategoryConstant.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -51,6 +54,21 @@ public class CategoryServiceImpl implements CategoryService{
                 CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll(commonSpecification));
 
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
+    }
+
+    @Override
+    public BaseResponse<Map<String, List<CategoryDTO>>> getGroupedCategoriesWithSubcategories(){
+        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryDTO> categoryDTOList = CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryList);
+
+        Map<String, List<CategoryDTO>> groupedCategoryByName = categoryDTOList.stream()
+                .collect(Collectors.groupingBy(
+                        CategoryDTO::name,
+                        TreeMap::new,
+                        Collectors.toList()
+                ));
+
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedCategoryByName);
     }
 
     @Override

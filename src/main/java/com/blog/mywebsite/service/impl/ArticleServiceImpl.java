@@ -37,7 +37,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public BaseResponse<List<ArticleDTO>> getArticles(
-            SearchOperation searchOperation,
             String id,
             LocalDate publishDate,
             int rate,
@@ -45,11 +44,11 @@ public class ArticleServiceImpl implements ArticleService {
             String categoryName
     ) {
         CommonSpecification<Article> specification = new CommonSpecification<>();
-        specification.add(new SearchCriteria(ID, id, searchOperation));
-        specification.add(new SearchCriteria(PUBLISH_DATE, publishDate, searchOperation));
-        specification.add(new SearchCriteria(RATE, rate, searchOperation));
-        specification.add(new SearchCriteria(READING_TIME, readingTime, searchOperation));
-        specification.add(new SearchCriteria(CATEGORY_ID, categoryName, searchOperation));
+        specification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));
+        specification.add(new SearchCriteria(PUBLISH_DATE, publishDate, SearchOperation.EQUAL));
+        specification.add(new SearchCriteria(RATE, rate, SearchOperation.EQUAL));
+        specification.add(new SearchCriteria(READING_TIME, readingTime, SearchOperation.EQUAL));
+        specification.add(new SearchCriteria(CATEGORY_ID, categoryName, SearchOperation.EQUAL));
 
         List<Article> articleList = articleRepository.findAll(specification);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
@@ -66,14 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         List<Article> articleList = articleRepository.findAll(specification);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
-        Map<Integer, List<ArticleDTO>> groupedByYear = articleDTOList.stream()
-                .collect(
-                        Collectors.groupingBy(
-                                articleDTO -> articleDTO.publishDate().getYear(),
-                                TreeMap::new,
-                                Collectors.toList()
-                        )
-                );
+        Map<Integer, List<ArticleDTO>> groupedByYear = getArticlesGroupedByYearSorted(articleDTOList);
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
     }
 
@@ -81,11 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
     public BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedYearByCategoryName(String categoryName) {
         List<Article> articleList = articleRepository.findByCategoryName(categoryName);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
-        Map<Integer, List<ArticleDTO>> groupedByYear = articleDTOList.stream()
-                .collect(Collectors.groupingBy(
-                        articleDTO -> articleDTO.publishDate().getYear(),
-                        Collectors.toList()
-                ));
+        Map<Integer, List<ArticleDTO>> groupedByYear = getArticlesGroupedByYearSorted(articleDTOList);
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedByYear);
     }
 
@@ -153,5 +141,14 @@ public class ArticleServiceImpl implements ArticleService {
         if(Objects.nonNull(categoryId)){
             article.setCategory(categoryService.findById(categoryId));
         }
+    }
+
+    private Map<Integer, List<ArticleDTO>> getArticlesGroupedByYearSorted(List<ArticleDTO> articleDTOList){
+        return articleDTOList.stream()
+                .collect(Collectors.groupingBy(
+                        articleDTO -> articleDTO.publishDate().getYear(),
+                        TreeMap::new,
+                        Collectors.toList()
+                ));
     }
 }

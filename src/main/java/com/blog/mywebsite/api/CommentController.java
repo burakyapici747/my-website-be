@@ -29,7 +29,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-articles")
+    @GetMapping("/articles")
     public ResponseEntity<BaseResponse<List<CommentDTO>>> getArticles(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "parent_id", required = false) String parentId

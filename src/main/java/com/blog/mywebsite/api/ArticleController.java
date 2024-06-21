@@ -26,6 +26,33 @@ public class ArticleController{
         this.articleService = articleService;
     }
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getAll(){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getAll();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("articles")
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getArticles(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "publish-date", required = false) LocalDate publishDate,
+            @RequestParam(value = "rate", required = false) Integer rate,
+            @RequestParam(value = "reading-time", required = false) Integer readingTime,
+            @RequestParam(value = "category-name", required = false) String categoryName
+    ){
+        final BaseResponse<List<ArticleDTO>> response =
+                articleService.getArticles(id, publishDate, rate, readingTime, categoryName);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/between-date")
+    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
+            @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date") LocalDate endDate
+    ){
+        final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/grouped-by-year")
     public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(
             @RequestParam("publishDate") LocalDate publishDate,
@@ -42,20 +69,6 @@ public class ArticleController{
     ){
         final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
                 articleService.getGroupedYearByCategoryName(categoryName);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/between-date")
-    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
-            @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date") LocalDate endDate
-    ){
-        final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getAll(){
-        final BaseResponse<List<ArticleDTO>> response = articleService.getAll();
         return ResponseEntity.ok(response);
     }
 

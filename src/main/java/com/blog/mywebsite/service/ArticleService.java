@@ -12,7 +12,6 @@ import java.util.Map;
 
 public interface ArticleService {
     BaseResponse<List<ArticleDTO>> getArticles(
-            SearchOperation searchOperation,
             String id,
             LocalDate publishDate,
             int rate,

@@ -54,8 +54,9 @@ public class SecurityConfiguration {
                 //.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/article/articles").permitAll(); // Tüm kullanıcılar için izin verildi
                     auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE).permitAll();
-                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE +"groupedYear/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE + "groupedYear/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, ALL_COMMENT).permitAll();
                     auth.requestMatchers(HttpMethod.GET, ALL_CATEGORY).permitAll();
                 })
