@@ -3,6 +3,7 @@ package com.blog.mywebsite.api;
 import com.blog.mywebsite.api.request.UserCreateRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.service.UserService;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class UserController {
     private final UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -20,5 +20,15 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<String>> create(@RequestBody UserCreateRequest userCreateRequest){
         return ResponseEntity.ok(userService.create(userCreateRequest));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse<Void>> deleteById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id
+    ){
+        BaseResponse<Void> response = userService.deleteById(id);
+        return ResponseEntity.ok(response);
     }
 }

@@ -37,13 +37,6 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public BaseResponse<List<CategoryDTO>> getAll() {
-        List<CategoryDTO> categoryDTOList =
-                CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll());
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
-    }
-
-    @Override
     public BaseResponse<List<CategoryDTO>> getCategories(String id, String parentId, String name) {
         CommonSpecification<Category> commonSpecification = new CommonSpecification<>();
         commonSpecification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));

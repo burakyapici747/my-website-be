@@ -33,13 +33,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public BaseResponse<List<CommentDTO>> getAll(){
-        List<Comment> commentList = commentRepository.findAll();
-        List<CommentDTO> commentDTOList = CommentMapper.INSTANCE.commentsToCommentDTOs(commentList);
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, commentDTOList);
-    }
-
-    @Override
     public BaseResponse<List<CommentDTO>> getComments(String id, String parentId) {
         CommonSpecification<Comment> specification = new CommonSpecification<>();
         specification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));

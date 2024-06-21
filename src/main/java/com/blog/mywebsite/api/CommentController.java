@@ -6,6 +6,7 @@ import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.service.CommentService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -23,18 +24,17 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<CommentDTO>>> getAll(){
-        final BaseResponse<List<CommentDTO>> response = commentService.getAll();
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/articles")
     public ResponseEntity<BaseResponse<List<CommentDTO>>> getArticles(
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "parent_id", required = false) String parentId
+            @RequestParam(value = "id", required = false)
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id,
+            @RequestParam(value = "parent_id", required = false)
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String parentId,
+            BindingResult bindingResult
     ){
-        final BaseResponse<List<CommentDTO>> response = commentService.getComments(id, parentId);
+        BaseResponse<List<CommentDTO>> response = commentService.getComments(id, parentId);
         return ResponseEntity.ok(response);
     }
 
@@ -43,17 +43,30 @@ public class CommentController {
             @RequestBody @Valid CommentPostRequest commentPostRequest,
             BindingResult bindingResult
     ){
-        final BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
+        BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping
     public ResponseEntity<BaseResponse<CommentDTO>> updateById(
-            @RequestParam(value = "id") String id,
-            @RequestBody @Valid CommentPutRequest commentPutRequest
-            ){
+            @RequestParam(value = "id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id,
+            @RequestBody @Valid CommentPutRequest commentPutRequest,
+            BindingResult bindingResult
+    ){
+        BaseResponse<CommentDTO> response = commentService.updateById(id, commentPutRequest);
+        return ResponseEntity.ok(response);
+    }
 
-
-        return null;
+    @DeleteMapping
+    public ResponseEntity<BaseResponse<Void>> deleteById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id,
+            BindingResult bindingResult
+    ){
+        BaseResponse<Void> response = commentService.deleteById(id);
+        return ResponseEntity.ok(response);
     }
 }

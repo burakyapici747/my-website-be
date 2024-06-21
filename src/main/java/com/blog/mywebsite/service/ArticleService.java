@@ -13,17 +13,15 @@ import java.util.Map;
 public interface ArticleService {
     BaseResponse<List<ArticleDTO>> getArticles(
             String id,
+            String categoryId,
             LocalDate publishDate,
-            int rate,
-            int readingTime,
-            String categoryName
+            Integer readingTime
     );
     BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedArticlesByYear(
             LocalDate publishDate,
             SearchOperation searchOperation
     );
     BaseResponse<Map<Integer, List<ArticleDTO>>> getGroupedYearByCategoryName(String categoryName);
-    BaseResponse<List<ArticleDTO>> getAll();
     BaseResponse<List<ArticleDTO>> getByDateRange(LocalDate startDate, LocalDate endDate);
     BaseResponse<Void> deleteById(String id);
     BaseResponse<ArticleDTO> create(ArticlePostRequest articlePostRequest);

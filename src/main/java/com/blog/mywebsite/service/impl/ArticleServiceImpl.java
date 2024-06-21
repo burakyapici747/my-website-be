@@ -38,17 +38,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public BaseResponse<List<ArticleDTO>> getArticles(
             String id,
+            String categoryId,
             LocalDate publishDate,
-            int rate,
-            int readingTime,
-            String categoryName
+            Integer readingTime
     ) {
         CommonSpecification<Article> specification = new CommonSpecification<>();
         specification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));
+        specification.add(new SearchCriteria(CATEGORY_ID, categoryId, SearchOperation.EQUAL));
         specification.add(new SearchCriteria(PUBLISH_DATE, publishDate, SearchOperation.EQUAL));
-        specification.add(new SearchCriteria(RATE, rate, SearchOperation.EQUAL));
         specification.add(new SearchCriteria(READING_TIME, readingTime, SearchOperation.EQUAL));
-        specification.add(new SearchCriteria(CATEGORY_ID, categoryName, SearchOperation.EQUAL));
 
         List<Article> articleList = articleRepository.findAll(specification);
         List<ArticleDTO> articleDTOList = ArticleMapper.INSTANCE.articlesToArticleDTOs(articleList);
@@ -84,13 +82,6 @@ public class ArticleServiceImpl implements ArticleService {
                         articleRepository.findByPublishDateBetween(startDate, endDate)
                 );
 
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
-    }
-
-    @Override
-    public BaseResponse<List<ArticleDTO>> getAll() {
-        List<ArticleDTO> articleDTOs =
-                ArticleMapper.INSTANCE.articlesToArticleDTOs(findAll());
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, articleDTOs);
     }
 
@@ -131,10 +122,6 @@ public class ArticleServiceImpl implements ArticleService {
     private Article findById(String id){
         return articleRepository.findById(id)
                 .orElseThrow( () -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
-    }
-
-    private List<Article> findAll(){
-        return articleRepository.findAll();
     }
 
     private void checkCategoryExistAndSetArticleCategoryName(String categoryId, Article article){

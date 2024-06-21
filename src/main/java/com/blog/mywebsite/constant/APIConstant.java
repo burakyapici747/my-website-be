@@ -4,7 +4,6 @@ public class APIConstant {
     private APIConstant(){
         throw new AssertionError();
     }
-
     public static final String BASE_URL = "/api";
     public static final String LOGIN = BASE_URL + "/user/login";
     public static final String CATEGORY_URL = BASE_URL + "/category";

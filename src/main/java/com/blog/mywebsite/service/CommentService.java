@@ -8,7 +8,6 @@ import com.blog.mywebsite.dto.CommentDTO;
 import java.util.List;
 
 public interface CommentService {
-    BaseResponse<List<CommentDTO>> getAll();
     BaseResponse<List<CommentDTO>> getComments(String id, String parentId);
     BaseResponse<Void> deleteById(String id);
     BaseResponse<CommentDTO> updateById(String id, CommentPutRequest commentUpdateRequest);

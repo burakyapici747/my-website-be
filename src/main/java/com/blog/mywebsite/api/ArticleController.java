@@ -1,12 +1,15 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.request.ArticleGetRequest;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.service.ArticleService;
+import com.blog.mywebsite.validation.ISO8601Validation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -26,48 +29,51 @@ public class ArticleController{
         this.articleService = articleService;
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<ArticleDTO>>> getAll(){
-        final BaseResponse<List<ArticleDTO>> response = articleService.getAll();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("articles")
+    @GetMapping("/articles")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getArticles(
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "publish-date", required = false) LocalDate publishDate,
-            @RequestParam(value = "rate", required = false) Integer rate,
-            @RequestParam(value = "reading-time", required = false) Integer readingTime,
-            @RequestParam(value = "category-name", required = false) String categoryName
+            @ModelAttribute @Valid ArticleGetRequest articleGetRequest,
+            BindingResult bindingResult
     ){
-        final BaseResponse<List<ArticleDTO>> response =
-                articleService.getArticles(id, publishDate, rate, readingTime, categoryName);
+        BaseResponse<List<ArticleDTO>> response = articleService.getArticles(
+                articleGetRequest.id(),
+                articleGetRequest.categoryId(),
+                articleGetRequest.publishDate(),
+                articleGetRequest.readingTime()
+        );
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/between-date")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
-            @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date") LocalDate endDate
+            @RequestParam("start-date")
+            @ISO8601Validation
+            LocalDate startDate,
+            @RequestParam("end-date")
+            @ISO8601Validation
+            LocalDate endDate,
+            BindingResult bindingResult
     ){
-        final BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
+        BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/grouped-by-year")
     public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(
-            @RequestParam("publishDate") LocalDate publishDate,
+            @RequestParam("publishDate")
+            @ISO8601Validation
+            LocalDate publishDate,
             @RequestParam("searchOperation") SearchOperation searchOperation
     ){
-        final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
+        BaseResponse<Map<Integer, List<ArticleDTO>>> response =
                 articleService.getGroupedArticlesByYear(publishDate, searchOperation);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/grouped-by-year-category-name")
     public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedYearByCategoryName(
-            @RequestParam String categoryName
+            @RequestParam("categoryName") String categoryName
     ){
-        final BaseResponse<Map<Integer, List<ArticleDTO>>> response =
+        BaseResponse<Map<Integer, List<ArticleDTO>>> response =
                 articleService.getGroupedYearByCategoryName(categoryName);
         return ResponseEntity.ok(response);
     }
@@ -77,16 +83,29 @@ public class ArticleController{
             @RequestBody @Valid ArticlePostRequest articlePostRequest,
             BindingResult bindingResult
     ){
-        final BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
+        BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse<ArticleDTO>> update(
-            @PathVariable String id, @RequestBody @Valid ArticlePutRequest articlePutRequest,
+    @PutMapping
+    public ResponseEntity<BaseResponse<ArticleDTO>> updateById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id,
+            @RequestBody @Valid ArticlePutRequest articlePutRequest,
             BindingResult bindingResult
     ){
-        final BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
+        BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<BaseResponse<Void>> deleteById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id
+    ){
+        BaseResponse<Void> response = articleService.deleteById(id);
         return ResponseEntity.ok(response);
     }
 }
