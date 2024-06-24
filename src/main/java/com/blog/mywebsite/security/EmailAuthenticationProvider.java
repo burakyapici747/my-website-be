@@ -22,7 +22,7 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
         CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
 
         if(Objects.isNull(customUserDetails)) {
-            throw new UsernameNotFoundException("Kullanıcı bulunamadı: " + email);
+            throw new UsernameNotFoundException("User not found: " + email);
         }
 
         return new EmailAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

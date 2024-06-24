@@ -12,10 +12,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+import static com.blog.mywebsite.constant.APIConstant.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping(COMMENT_URL)
 @Validated
 public class CommentController {
     private final CommentService commentService;
@@ -24,13 +27,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @GetMapping("/articles")
-    public ResponseEntity<BaseResponse<List<CommentDTO>>> getArticles(
+    @GetMapping(COMMENTS_URL)
+    public ResponseEntity<BaseResponse<List<CommentDTO>>> getComments(
             @RequestParam(value = "id", required = false)
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             @RequestParam(value = "parent_id", required = false)
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = COMMENT_PARENT_ID_SIZE_MESSAGE)
             String parentId,
             BindingResult bindingResult
     ){
@@ -50,7 +53,7 @@ public class CommentController {
     @PutMapping
     public ResponseEntity<BaseResponse<CommentDTO>> updateById(
             @RequestParam(value = "id")
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             @RequestBody @Valid CommentPutRequest commentPutRequest,
             BindingResult bindingResult
@@ -62,7 +65,7 @@ public class CommentController {
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> deleteById(
             @RequestParam("id")
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             BindingResult bindingResult
     ){

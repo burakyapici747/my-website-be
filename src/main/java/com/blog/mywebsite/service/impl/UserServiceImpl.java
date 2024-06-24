@@ -5,6 +5,7 @@ import com.blog.mywebsite.api.response.*;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.UserDTO;
 import com.blog.mywebsite.exception.EntityExistException;
+import com.blog.mywebsite.mapper.UserMapper;
 import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.model.User;
 import com.blog.mywebsite.repository.RoleRepository;
@@ -29,8 +30,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse<UserDTO> getById(String id) {
-        return null;
+    public BaseResponse<UserDTO> getById(String id){
+        User user = findById(id);
+        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, userDTO);
     }
 
     @Override
@@ -54,19 +57,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse<Void> deleteById(String id) {
-        return null;
-    }
-
-    @Override
     public BaseResponse<UserDTO> updateNameById(String id, String name) {
-        return null;
+        User user = findById(id);
+        user.setName(name);
+
+        userRepository.save(user);
+        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
+        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, userDTO);
+    }
+    @Override
+    public BaseResponse<Void> deleteById(String id) {
+        User user = findById(id);
+        userRepository.delete(user);
+        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
 
     private void checkUserIsExistByEmail(String email){
         if(userRepository.existsByEmail(email)){
             throw new EntityExistException("This email address (" + email + ") is already in use.");
         }
+    }
+
+    private User findById(String id){
+        return userRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 
     protected User getUserByEmail(String email){

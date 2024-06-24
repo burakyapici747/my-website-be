@@ -67,8 +67,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
 
-        //TODO COOKIE eklenecek
-
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
@@ -127,6 +125,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             throw new AuthenticationServiceException("ContentType must be application/json");
         }
 
-        //TODO Email boş gelme durumunu vs. kontrol et eğer boş işe client'e success false dön.
+        //Email boş gelme durumunu vs. kontrol et eğer boş işe client'e success false dön.
     }
 }

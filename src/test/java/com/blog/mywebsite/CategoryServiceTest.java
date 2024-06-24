@@ -149,7 +149,6 @@ public class CategoryServiceTest {
 
         @Test
         void givenInvalidInput_whenDelete_thenThrowConstraintViolationException(){
-
         }
     }
 }

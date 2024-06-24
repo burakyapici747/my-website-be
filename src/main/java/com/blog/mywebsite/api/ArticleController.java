@@ -15,14 +15,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+import static com.blog.mywebsite.constant.APIConstant.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/article")
+@RequestMapping(ARTICLE_URL)
 @Validated
-public class ArticleController{
+public class ArticleController {
     private final ArticleService articleService;
 
     public ArticleController(ArticleService articleService) {
@@ -31,9 +34,8 @@ public class ArticleController{
 
     @GetMapping("/articles")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getArticles(
-            @ModelAttribute @Valid ArticleGetRequest articleGetRequest,
-            BindingResult bindingResult
-    ){
+            @ModelAttribute @Valid ArticleGetRequest articleGetRequest
+    ) {
         BaseResponse<List<ArticleDTO>> response = articleService.getArticles(
                 articleGetRequest.id(),
                 articleGetRequest.categoryId(),
@@ -43,38 +45,31 @@ public class ArticleController{
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/between-date")
+    @GetMapping("/by-date-range")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
-            @RequestParam("start-date")
-            @ISO8601Validation
-            LocalDate startDate,
-            @RequestParam("end-date")
-            @ISO8601Validation
-            LocalDate endDate,
-            BindingResult bindingResult
-    ){
+            @RequestParam("start-date") @ISO8601Validation LocalDate startDate,
+            @RequestParam("end-date") @ISO8601Validation LocalDate endDate
+    ) {
         BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/grouped-by-year")
-    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByGroupedByYear(
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedByYear(
             @RequestParam("publishDate")
             @ISO8601Validation
             LocalDate publishDate,
             @RequestParam("searchOperation") SearchOperation searchOperation
-    ){
-        BaseResponse<Map<Integer, List<ArticleDTO>>> response =
-                articleService.getGroupedArticlesByYear(publishDate, searchOperation);
+    ) {
+        BaseResponse<Map<Integer, List<ArticleDTO>>> response = articleService.getGroupedArticlesByYear(publishDate, searchOperation);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/grouped-by-year-category-name")
-    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getGroupedYearByCategoryName(
+    @GetMapping("/by-category")
+    public ResponseEntity<BaseResponse<Map<Integer, List<ArticleDTO>>>> getByCategoryNameGroupedByYear(
             @RequestParam("categoryName") String categoryName
-    ){
-        BaseResponse<Map<Integer, List<ArticleDTO>>> response =
-                articleService.getGroupedYearByCategoryName(categoryName);
+    ) {
+        BaseResponse<Map<Integer, List<ArticleDTO>>> response = articleService.getGroupedYearByCategoryName(categoryName);
         return ResponseEntity.ok(response);
     }
 
@@ -82,7 +77,7 @@ public class ArticleController{
     public ResponseEntity<BaseResponse<ArticleDTO>> create(
             @RequestBody @Valid ArticlePostRequest articlePostRequest,
             BindingResult bindingResult
-    ){
+    ) {
         BaseResponse<ArticleDTO> response = articleService.create(articlePostRequest);
         return ResponseEntity.ok(response);
     }
@@ -90,11 +85,11 @@ public class ArticleController{
     @PutMapping
     public ResponseEntity<BaseResponse<ArticleDTO>> updateById(
             @RequestParam("id")
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             @RequestBody @Valid ArticlePutRequest articlePutRequest,
             BindingResult bindingResult
-    ){
+    ) {
         BaseResponse<ArticleDTO> response = articleService.updateById(id, articlePutRequest);
         return ResponseEntity.ok(response);
     }
@@ -102,9 +97,9 @@ public class ArticleController{
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> deleteById(
             @RequestParam("id")
-            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id
-    ){
+    ) {
         BaseResponse<Void> response = articleService.deleteById(id);
         return ResponseEntity.ok(response);
     }

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.blog.mywebsite.constant.APIConstant.LOGIN;
+import static com.blog.mywebsite.constant.APIConstant.*;
 
 public class CustomAuthorizationFilter extends OncePerRequestFilter{
     private final CustomUserDetailsService customUserDetailsService;
@@ -36,12 +36,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals(LOGIN)){
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+        if(request.getServletPath().equals(USER_LOGIN_URL)){
             filterChain.doFilter(request, response);
             return;
         }
-
         Optional<JWTStrategy> jwtStrategyOptional = JWTStrategyFactory.getStrategy(request);
         jwtStrategyOptional.ifPresent(jwtStrategy -> {
             try {

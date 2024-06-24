@@ -53,27 +53,30 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 //.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/user/login", "/api/user/register").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/article/articles").permitAll(); // Tüm kullanıcılar için izin verildi
-                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE).permitAll();
-                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE + "groupedYear/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, ALL_COMMENT).permitAll();
-                    auth.requestMatchers(HttpMethod.GET, ALL_CATEGORY).permitAll();
+                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE_URL).permitAll();
                 })
-                .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
+                .authorizeHttpRequests(auth->{
+                    auth.requestMatchers(HttpMethod.POST, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET, ALL_CATEGORY_URL).permitAll();
                 })
-                .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_CATEGORY).hasAuthority(ADMIN.getValue());
+                .authorizeHttpRequests(auth->{
+                    auth.requestMatchers(HttpMethod.POST, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET, ALL_COMMENT_URL).permitAll();
                 })
-                .authorizeHttpRequests(auth-> {
-                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT, ALL_COMMENT).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_COMMENT).hasAuthority(ADMIN.getValue());
+                .authorizeHttpRequests(auth->{
+                    auth.requestMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.POST, USER_REGISTER_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.POST, ALL_USER_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_USER_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_USER_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET, ALL_USER_URL).hasAuthority(USER.getValue());
                     auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> {

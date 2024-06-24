@@ -36,7 +36,11 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> create(@RequestBody @Valid CategoryPostRequest categoryPostRequest){
+    public ResponseEntity<BaseResponse<CategoryDTO>> create(
+            @RequestBody
+            @Valid
+            CategoryPostRequest categoryPostRequest
+    ){
         BaseResponse<CategoryDTO> response = categoryService.create(categoryPostRequest);
         return ResponseEntity.ok(response);
     }
