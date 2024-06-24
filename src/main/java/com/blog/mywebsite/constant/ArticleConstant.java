@@ -1,6 +1,6 @@
 package com.blog.mywebsite.constant;
 
-public class ArticleConstant {
+public final class ArticleConstant {
     private ArticleConstant(){throw new AssertionError();}
     public static final String ID = "id";
     public static final String PUBLISH_DATE = "publishDate";
