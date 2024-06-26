@@ -1,5 +1,6 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.request.ArticleGetByDateRange;
 import com.blog.mywebsite.api.request.ArticleGetRequest;
 import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.api.request.ArticlePutRequest;
@@ -31,7 +32,6 @@ public class ArticleController {
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
     }
-
     @GetMapping("/articles")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getArticles(
             @ModelAttribute @Valid ArticleGetRequest articleGetRequest
@@ -47,10 +47,9 @@ public class ArticleController {
 
     @GetMapping("/by-date-range")
     public ResponseEntity<BaseResponse<List<ArticleDTO>>> getByDateRange(
-            @RequestParam("start-date") @ISO8601Validation LocalDate startDate,
-            @RequestParam("end-date") @ISO8601Validation LocalDate endDate
+            @Valid ArticleGetByDateRange articleGetByDateRange
     ) {
-        BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(startDate, endDate);
+        BaseResponse<List<ArticleDTO>> response = articleService.getByDateRange(articleGetByDateRange.from(), articleGetByDateRange.to());
         return ResponseEntity.ok(response);
     }
 

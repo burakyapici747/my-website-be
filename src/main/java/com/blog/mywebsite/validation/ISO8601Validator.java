@@ -16,13 +16,14 @@ public class ISO8601Validator implements ConstraintValidator<ISO8601Validation, 
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
-            return true;
+            return false;
         }
 
         try {
             DateTimeFormatter.ISO_LOCAL_DATE.format(value);
             return true;
         } catch (DateTimeParseException e) {
+            System.out.println("burak" + e.getMessage());
             return false;
         }
     }

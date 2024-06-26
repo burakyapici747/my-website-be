@@ -7,7 +7,8 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.Optional;
 
-public class JWTStrategyFactory {
+public final class JWTStrategyFactory {
+    private JWTStrategyFactory(){throw new AssertionError();}
     public static Optional<JWTStrategy> getStrategy(HttpServletRequest request) {
         if (hasAuthorizationHeader(request)) {
             return Optional.of(new AuthorizationHeaderStrategy(request));
