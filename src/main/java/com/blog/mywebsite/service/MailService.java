@@ -1,8 +1,5 @@
 package com.blog.mywebsite.service;
 
 public interface MailService {
-    //TODO sendRegistrationEmail,
-    //TODO sendEmail(String to, String subject, String content),
-    //TODO
-
+    void sendEmail(String senderEmail, String[] receiverEmails, String subject, String content);
 }

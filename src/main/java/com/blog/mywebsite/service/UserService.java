@@ -9,4 +9,5 @@ public interface UserService {
     BaseResponse<String> create(UserCreateRequest userCreateRequest);
     BaseResponse<Void> deleteById(String id);
     BaseResponse<UserDTO> updateNameById(String id, String name);
+    BaseResponse<Void> deleteCurrentUser();
 }

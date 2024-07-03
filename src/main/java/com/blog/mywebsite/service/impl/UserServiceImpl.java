@@ -2,6 +2,8 @@ package com.blog.mywebsite.service.impl;
 
 import com.blog.mywebsite.api.request.UserCreateRequest;
 import com.blog.mywebsite.api.response.*;
+import com.blog.mywebsite.common.util.security.JWTHelper;
+import com.blog.mywebsite.common.util.security.SystemHelper;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.UserDTO;
 import com.blog.mywebsite.exception.EntityExistException;
@@ -10,23 +12,26 @@ import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.model.User;
 import com.blog.mywebsite.repository.RoleRepository;
 import com.blog.mywebsite.repository.UserRepository;
+import com.blog.mywebsite.service.MailService;
 import com.blog.mywebsite.service.UserService;
-import com.blog.mywebsite.common.util.security.JWTHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final SystemHelper systemHelper;
+    private final MailService mailService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, SystemHelper systemHelper, MailService mailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.systemHelper = systemHelper;
+        this.mailService = mailService;
     }
 
     @Override
@@ -52,7 +57,7 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(role);
 
         userRepository.save(user);
-
+        mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
     }
 
@@ -65,9 +70,17 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
         return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, userDTO);
     }
+
     @Override
     public BaseResponse<Void> deleteById(String id) {
         User user = findById(id);
+        userRepository.delete(user);
+        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+    }
+
+    @Override
+    public BaseResponse<Void> deleteCurrentUser(){
+        User user = systemHelper.getCurrentUser();
         userRepository.delete(user);
         return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
     }
@@ -83,7 +96,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }
 
-    protected User getUserByEmail(String email){
+    public User getUserByEmail(String email){
          return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }

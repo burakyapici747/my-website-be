@@ -10,7 +10,6 @@ import com.blog.mywebsite.security.CustomAuthenticationFilter;
 import com.blog.mywebsite.security.CustomAuthorizationFilter;
 import com.blog.mywebsite.security.EmailAuthenticationProvider;
 import com.blog.mywebsite.service.impl.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -74,6 +73,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll();
                     auth.requestMatchers(HttpMethod.POST, USER_REGISTER_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.DELETE, "/v1/api/user/self").hasAuthority(USER.getValue());
                     auth.requestMatchers(HttpMethod.POST, ALL_USER_URL).hasAuthority(ADMIN.getValue());
                     auth.requestMatchers(HttpMethod.PUT, ALL_USER_URL).hasAuthority(ADMIN.getValue());
                     auth.requestMatchers(HttpMethod.DELETE, ALL_USER_URL).hasAuthority(ADMIN.getValue());

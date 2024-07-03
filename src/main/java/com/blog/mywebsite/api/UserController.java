@@ -36,6 +36,12 @@ public class UserController {
         return ResponseEntity.ok(userService.create(userCreateRequest));
     }
 
+    @DeleteMapping("/self")
+    public ResponseEntity<BaseResponse<Void>> deleteCurrentUser(){
+        BaseResponse<Void> response = userService.deleteCurrentUser();
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping
     public ResponseEntity<BaseResponse<Void>> deleteById(
             @RequestParam("id")
