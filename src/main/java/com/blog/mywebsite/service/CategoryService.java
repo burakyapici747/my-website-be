@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface CategoryService {
-    BaseResponse<List<CategoryDTO>> getCategories(String id, String parentId, String name);
-    BaseResponse<Map<String, List<CategoryDTO>>> getGroupedCategoriesWithSubcategories();
-    BaseResponse<Void> deleteById(String id);
-    BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest);
-    BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest);
+    List<CategoryDTO> getCategories(String id, String parentId, String name);
+    Map<String, List<CategoryDTO>> getGroupedCategoriesWithSubcategories();
+    CategoryDTO deleteById(String id);
+    CategoryDTO create(CategoryPostRequest categoryPostRequest);
+    CategoryDTO updateById(String id, CategoryPutRequest categoryPutRequest);
     Category findById(String id);
 }

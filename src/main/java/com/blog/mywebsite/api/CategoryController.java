@@ -1,10 +1,11 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.output.CategoryOutput;
 import com.blog.mywebsite.api.request.CategoryGetRequest;
 import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.dto.CategoryDTO;
+import com.blog.mywebsite.mapper.CategoryMapper;
 import com.blog.mywebsite.service.CategoryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -24,45 +25,59 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<BaseResponse<List<CategoryDTO>>> getCategories(
+    public ResponseEntity<BaseResponse<List<CategoryOutput>>> getCategories(
             @ModelAttribute @Valid CategoryGetRequest categoryGetRequest
     ){
-        BaseResponse<List<CategoryDTO>> response = categoryService.getCategories(
-                categoryGetRequest.id(),
-                categoryGetRequest.parentId(),
-                categoryGetRequest.name()
+        BaseResponse<List<CategoryOutput>> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOListToCategoryOutputList(
+                        categoryService.getCategories(
+                                categoryGetRequest.id(),
+                                categoryGetRequest.parentId(),
+                                categoryGetRequest.name()
+                        )
+                )
         );
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> create(
+    public ResponseEntity<BaseResponse<CategoryOutput>> create(
             @RequestBody
             @Valid
             CategoryPostRequest categoryPostRequest
     ){
-        BaseResponse<CategoryDTO> response = categoryService.create(categoryPostRequest);
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.create(categoryPostRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @PutMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> updateById(
+    public ResponseEntity<BaseResponse<CategoryOutput>> updateById(
             @RequestParam("id")
             @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
             String id,
             @RequestBody @Valid CategoryPutRequest categoryPutRequest
     ) {
-        BaseResponse<CategoryDTO> response = categoryService.updateById(id, categoryPutRequest);
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.updateById(id, categoryPutRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseResponse<Void>> deleteById(
+    public ResponseEntity<BaseResponse<CategoryOutput>> deleteById(
             @RequestParam("id")
             @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
             String id
     ){
-        BaseResponse<Void> response = categoryService.deleteById(id);
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.deleteById(id))
+        );
         return ResponseEntity.ok(response);
     }
 }

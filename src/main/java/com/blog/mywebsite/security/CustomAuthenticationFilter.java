@@ -2,7 +2,6 @@ package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.common.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -67,9 +66,10 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
-        BaseResponse<Map<String, String>> responseData =
-                new SuccessfulDataResponse<>(HttpServletResponse.SC_OK, "", data);
-
+        BaseResponse<Map<String, String>> responseData = new BaseResponse<>(
+                null,
+                data
+        );
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
 

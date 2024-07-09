@@ -2,9 +2,6 @@ package com.blog.mywebsite.service.impl;
 
 import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
-import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessfulDataResponse;
-import com.blog.mywebsite.api.response.SuccessfulResponse;
 import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.common.validator.CommonValidator;
 import com.blog.mywebsite.constant.EntityConstant;
@@ -18,7 +15,6 @@ import com.blog.mywebsite.repository.CategoryRepository;
 import com.blog.mywebsite.service.CategoryService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static com.blog.mywebsite.constant.CategoryConstant.*;
@@ -37,43 +33,37 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public BaseResponse<List<CategoryDTO>> getCategories(String id, String parentId, String name) {
+    public List<CategoryDTO> getCategories(String id, String parentId, String name) {
         CommonSpecification<Category> commonSpecification = new CommonSpecification<>();
         commonSpecification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));
         commonSpecification.add(new SearchCriteria(PARENT_ID, parentId, SearchOperation.EQUAL));
         commonSpecification.add(new SearchCriteria(NAME, name, SearchOperation.EQUAL));
-
-        List<CategoryDTO> categoryDTOList =
-                CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll(commonSpecification));
-
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, categoryDTOList);
+        return CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryRepository.findAll(commonSpecification));
     }
 
     @Override
-    public BaseResponse<Map<String, List<CategoryDTO>>> getGroupedCategoriesWithSubcategories(){
+    public Map<String, List<CategoryDTO>> getGroupedCategoriesWithSubcategories(){
         List<Category> categoryList = categoryRepository.findAll();
         List<CategoryDTO> categoryDTOList = CategoryMapper.INSTANCE.categoriesToCategoryDTOs(categoryList);
 
-        Map<String, List<CategoryDTO>> groupedCategoryByName = categoryDTOList.stream()
-                .collect(Collectors.groupingBy(
-                        CategoryDTO::name,
-                        TreeMap::new,
-                        Collectors.toList()
-                ));
-
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, groupedCategoryByName);
+        return categoryDTOList.stream()
+            .collect(Collectors.groupingBy(
+                    CategoryDTO::name,
+                    TreeMap::new,
+                    Collectors.toList()
+            ));
     }
 
     @Override
-    public BaseResponse<Void> deleteById(String id) {
+    public CategoryDTO deleteById(String id) {
         ValueUtil.checkDataIsNull(id, "Id is cannot be null");
         Category category = findById(id);
         categoryRepository.delete(category);
-        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return CategoryMapper.INSTANCE.categoryToCategoryDTO(category);
     }
 
     @Override
-    public BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest) {
+    public CategoryDTO create(CategoryPostRequest categoryPostRequest) {
         ValueUtil.checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
         CommonValidator.validateInput(categoryPostRequest);
         checkCategoryIsExistByName(categoryPostRequest.name());
@@ -81,24 +71,17 @@ public class CategoryServiceImpl implements CategoryService{
         Category category = new Category();
         category.setName(categoryPostRequest.name());
         checkParentCategoryExistThenSetParentCategory(categoryPostRequest.parentId(), category);
-
-        CategoryDTO categoryDTO =
-                CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
-
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, categoryDTO);
+        return CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
     }
 
     @Override
-    public BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest){
+    public CategoryDTO updateById(String id, CategoryPutRequest categoryPutRequest){
         CommonValidator.validateInput(categoryPutRequest);
         ValueUtil.checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
         Category category = findById(id);
         checkParentCategoryExistThenSetParentCategory(categoryPutRequest.parentId(), category);
-
         CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
-
-        CategoryDTO categoryDTO = CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, categoryDTO);
+        return CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
     }
 
     public Category findById(String id){

@@ -1,9 +1,10 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.output.CommentOutput;
 import com.blog.mywebsite.api.request.CommentPostRequest;
 import com.blog.mywebsite.api.request.CommentPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.dto.CommentDTO;
+import com.blog.mywebsite.mapper.CommentMapper;
 import com.blog.mywebsite.service.CommentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -28,7 +29,7 @@ public class CommentController {
     }
 
     @GetMapping(COMMENTS_URL)
-    public ResponseEntity<BaseResponse<List<CommentDTO>>> getComments(
+    public ResponseEntity<BaseResponse<List<CommentOutput>>> getComments(
             @RequestParam(value = "id", required = false)
             @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
@@ -37,39 +38,51 @@ public class CommentController {
             String parentId,
             BindingResult bindingResult
     ){
-        BaseResponse<List<CommentDTO>> response = commentService.getComments(id, parentId);
+        BaseResponse<List<CommentOutput>> response = new BaseResponse<>(
+                null,
+                CommentMapper.INSTANCE.commentDTOListToCommentOutputList(commentService.getComments(id, parentId))
+        );
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CommentDTO>> create(
+    public ResponseEntity<BaseResponse<CommentOutput>> create(
             @RequestBody @Valid CommentPostRequest commentPostRequest,
             BindingResult bindingResult
     ){
-        BaseResponse<CommentDTO> response = commentService.create(commentPostRequest);
+        BaseResponse<CommentOutput> response = new BaseResponse<>(
+                null,
+                CommentMapper.INSTANCE.commentDTOToCommentOutput(commentService.create(commentPostRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @PutMapping
-    public ResponseEntity<BaseResponse<CommentDTO>> updateById(
+    public ResponseEntity<BaseResponse<CommentOutput>> updateById(
             @RequestParam(value = "id")
             @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             @RequestBody @Valid CommentPutRequest commentPutRequest,
             BindingResult bindingResult
     ){
-        BaseResponse<CommentDTO> response = commentService.updateById(id, commentPutRequest);
+        BaseResponse<CommentOutput> response = new BaseResponse<>(
+                null,
+                CommentMapper.INSTANCE.commentDTOToCommentOutput(commentService.updateById(id, commentPutRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseResponse<Void>> deleteById(
+    public ResponseEntity<BaseResponse<CommentOutput>> deleteById(
             @RequestParam("id")
             @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
             BindingResult bindingResult
     ){
-        BaseResponse<Void> response = commentService.deleteById(id);
+        BaseResponse<CommentOutput> response = new BaseResponse<>(
+                null,
+                CommentMapper.INSTANCE.commentDTOToCommentOutput(commentService.deleteById(id))
+        );
         return ResponseEntity.ok(response);
     }
 }
