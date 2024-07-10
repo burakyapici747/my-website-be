@@ -53,22 +53,22 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 //.cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT, ALL_ARTICLE_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.GET, ALL_ARTICLE_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.POST).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET).permitAll();
                 })
                 .authorizeHttpRequests(auth->{
-                    auth.requestMatchers(HttpMethod.POST, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.GET, ALL_CATEGORY_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.POST).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET).permitAll();
                 })
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers(HttpMethod.POST, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
                     auth.requestMatchers(HttpMethod.PUT, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE, ALL_COMMENT_URL).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.GET, ALL_COMMENT_URL).permitAll();
+                    auth.requestMatchers(HttpMethod.DELETE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.GET).permitAll();
                 })
                 .authorizeHttpRequests(auth->{
                     auth.requestMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll();

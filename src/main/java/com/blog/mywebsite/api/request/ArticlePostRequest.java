@@ -19,6 +19,6 @@ public record ArticlePostRequest(
         String content,
         @Positive(message = READING_TIME_MESSAGE)
         int readingTime,
-        @ISO8601Validation
+        //@ISO8601Validation
         String publishDate
 ){}

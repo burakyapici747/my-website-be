@@ -23,7 +23,7 @@ public record ArticleGetRequest(
         @Size(min = ARTICLE_TITLE_MIN_LENGTH, max = ARTICLE_TITLE_MAX_LENGTH, message = ARTICLE_TITLE_MESSAGE)
         String title,
         @Nullable
-        @ISO8601Validation
+        //@ISO8601Validation
         LocalDate publishDate,
         @Nullable
         @Positive(message = READING_TIME_MESSAGE)

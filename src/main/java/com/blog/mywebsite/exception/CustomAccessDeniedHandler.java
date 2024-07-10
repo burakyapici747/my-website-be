@@ -1,7 +1,10 @@
 package com.blog.mywebsite.exception;
 
 import com.blog.mywebsite.api.response.ErrorResponse;
+import com.blog.mywebsite.constant.APIConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,10 +28,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     ) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//        ErrorResponse errorResponse = new ErrorResponse(
-//                HttpServletResponse.SC_UNAUTHORIZED,
-//                "You do not have permission to access this resource."
-//        );
+
         List<ErrorResponse.Error> errorResponse = new ArrayList<>(List.of(
                 new ErrorResponse.Error(
                         UUID.randomUUID().toString(),
@@ -40,10 +40,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         new ErrorResponse.Error.Meta(
                                 UUID.randomUUID().toString(),
                                 LocalDateTime.now(),
-                                "Version"
+                                APIConstant.VERSION
                         )
                 )
         ));
-        new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.writeValue(response.getOutputStream(), errorResponse);
     }
 }

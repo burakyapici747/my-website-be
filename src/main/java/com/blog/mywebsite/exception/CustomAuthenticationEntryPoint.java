@@ -1,7 +1,10 @@
 package com.blog.mywebsite.exception;
 
 import com.blog.mywebsite.api.response.ErrorResponse;
+import com.blog.mywebsite.constant.APIConstant;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,28 +28,24 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     ) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-//        ErrorResponse errorResponse = new ErrorResponse(
-//                HttpServletResponse.SC_UNAUTHORIZED,
-//                "Authentication required. Please log in to the system."
-//        );
-
         List<ErrorResponse.Error> errorResponse = new ArrayList<>(List.of(
                 new ErrorResponse.Error(
                         UUID.randomUUID().toString(),
                         null,
                         String.valueOf(HttpStatus.BAD_REQUEST.value()),
                         "Title Error",
-                        "The login information is incorrect. Please check your information and try again.",
+                        "Authentication required. Please log in to the system.",
                         null,
                         new ErrorResponse.Error.Meta(
                                 UUID.randomUUID().toString(),
                                 LocalDateTime.now(),
-                                "Version"
+                                APIConstant.VERSION
                         )
                 )
         ));
-
-        new ObjectMapper().writeValue(response.getOutputStream(), errorResponse);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.writeValue(response.getOutputStream(), errorResponse);
     }
 }

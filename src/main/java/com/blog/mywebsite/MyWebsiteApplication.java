@@ -14,9 +14,7 @@ public class MyWebsiteApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-		var context = SpringApplication.run(MyWebsiteApplication.class, args);
-		var bean = context.getBean("articleController");
-		System.out.println("uzayli" + bean.getClass());
+		SpringApplication.run(MyWebsiteApplication.class, args);
 	}
 
 	@Override
