@@ -2,13 +2,14 @@ package com.blog.mywebsite.api.request;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+
 public record ArticlePutRequest(
-        @Size(min = 5, max = 50, message = "Title field must be between 5 and 255 characters long.")
+        @Size(min = ARTICLE_TITLE_MIN_LENGTH, max = ARTICLE_TITLE_MAX_LENGTH, message = ARTICLE_TITLE_MESSAGE)
         String title,
-
-        @Size(min = 5, max = 1000, message = "Content field must be between 5 and 100 characters long.")
+        @Size(min = ARTICLE_CONTENT_MIN_LENGTH, max = ARTICLE_CONTENT_MAX_LENGTH, message = ARTICLE_CONTENT_MESSAGE)
         String content,
-
-        @PositiveOrZero(message = "ReadingTime field must be positive.")
+        @PositiveOrZero(message = READING_TIME_MESSAGE)
         Integer readingTime
 ) { }

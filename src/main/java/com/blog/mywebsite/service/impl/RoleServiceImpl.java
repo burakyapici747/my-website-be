@@ -1,7 +1,5 @@
 package com.blog.mywebsite.service.impl;
 
-import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.RoleDTO;
 import com.blog.mywebsite.mapper.RoleMapper;
@@ -28,12 +26,10 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public BaseResponse<RoleDTO> create(com.blog.mywebsite.enumerator.Role roleName) {
+    public RoleDTO create(com.blog.mywebsite.enumerator.Role roleName) {
         final Role role = new Role();
         role.setName(roleName.getValue());
 
-        final RoleDTO roleDTO = RoleMapper.INSTANCE.roleToRoleDTO(roleRepository.save(role));
-
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, roleDTO);
+        return RoleMapper.INSTANCE.roleToRoleDTO(roleRepository.save(role));
     }
 }

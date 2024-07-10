@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(user.getName(), user.getEmail(), authorities);
     }
 
-    private User getUserByEmail(String email){
+    public User getUserByEmail(String email){
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(EntityConstant.NOT_FOUND_DATA));
     }

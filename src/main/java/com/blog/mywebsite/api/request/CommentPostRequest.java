@@ -1,16 +1,17 @@
 package com.blog.mywebsite.api.request;
 
-import com.blog.mywebsite.validation.NullableSize;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+
 public record CommentPostRequest(
-        @NotBlank(message = "ArticleId cannot be empty or null.")
-        @Size(max = 36, message = "ArticleId field must be 36 characters long.")
+        @NotBlank(message = ARTICLE_ID_BLANK_MESSAGE)
+        @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ARTICLE_ID_SIZE_MESSAGE)
         String articleId,
-        @NullableSize(message = "CommentParentId field must be empty or 36 characters long.")
+        @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = COMMENT_PARENT_ID_SIZE_MESSAGE)
         String parentId,
-        @NotBlank(message = "Content cannot be empty or null.")
-        @Size(max = 100, message = "Title field must be between 5 and 255 characters long.")
+        @NotBlank(message = COMMENT_CONTENT_BLANK_MESSAGE)
+        @Size(min = COMMENT_CONTENT_MIN_LENGTH, max = COMMENT_CONTENT_MAX_LENGTH, message = COMMENT_CONTENT_SIZE_MESSAGE)
         String content
 ) { }

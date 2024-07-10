@@ -6,11 +6,13 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = ISO8601Validator.class)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(validatedBy = DateByRangeValidator.class)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ISO8601Validation {
-    String message() default "Please enter a date in ISO 8601 format. For example, 'yyyy-MM-dd'";
+public @interface DateByRangeValidation {
+    String message() default "`from` should be more recent then `to`";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

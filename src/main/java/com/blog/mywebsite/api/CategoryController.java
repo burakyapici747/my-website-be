@@ -1,11 +1,14 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.output.CategoryOutput;
+import com.blog.mywebsite.api.request.CategoryGetRequest;
 import com.blog.mywebsite.api.request.CategoryPostRequest;
 import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.dto.CategoryDTO;
+import com.blog.mywebsite.mapper.CategoryMapper;
 import com.blog.mywebsite.service.CategoryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,45 +20,64 @@ import java.util.List;
 @Validated
 public class CategoryController {
     private final CategoryService categoryService;
-
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
-    public ResponseEntity<BaseResponse<List<CategoryDTO>>> getAll(){
-        final BaseResponse<List<CategoryDTO>> response = categoryService.getAll();
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/categories")
-    public ResponseEntity<BaseResponse<List<CategoryDTO>>> getCategories(
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "parent_id", required = false) String parentId,
-            @RequestParam(value = "name", required = false) String name
+    public ResponseEntity<BaseResponse<List<CategoryOutput>>> getCategories(
+            @ModelAttribute @Valid CategoryGetRequest categoryGetRequest
     ){
-        final BaseResponse<List<CategoryDTO>> response = categoryService.getCategories(id, parentId, name);
+        BaseResponse<List<CategoryOutput>> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOListToCategoryOutputList(
+                        categoryService.getCategories(
+                                categoryGetRequest.id(),
+                                categoryGetRequest.parentId(),
+                                categoryGetRequest.name()
+                        )
+                )
+        );
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> create(@RequestBody @Valid CategoryPostRequest categoryPostRequest){
-        final BaseResponse<CategoryDTO> response = categoryService.create(categoryPostRequest);
+    public ResponseEntity<BaseResponse<CategoryOutput>> create(
+            @RequestBody
+            @Valid
+            CategoryPostRequest categoryPostRequest
+    ){
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.create(categoryPostRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @PutMapping
-    public ResponseEntity<BaseResponse<CategoryDTO>> updateById(
-            @RequestParam("id") String id,
+    public ResponseEntity<BaseResponse<CategoryOutput>> updateById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id,
             @RequestBody @Valid CategoryPutRequest categoryPutRequest
     ) {
-        final BaseResponse<CategoryDTO> response = categoryService.updateById(id, categoryPutRequest);
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.updateById(id, categoryPutRequest))
+        );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping
-    public ResponseEntity<BaseResponse<Void>> deleteById(@RequestParam("id") String id){
-        final BaseResponse<Void> response = categoryService.deleteById(id);
+    public ResponseEntity<BaseResponse<CategoryOutput>> deleteById(
+            @RequestParam("id")
+            @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
+            String id
+    ){
+        BaseResponse<CategoryOutput> response = new BaseResponse<>(
+                null,
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.deleteById(id))
+        );
         return ResponseEntity.ok(response);
     }
 }

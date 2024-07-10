@@ -1,7 +1,6 @@
 package com.blog.mywebsite;
 
 import com.blog.mywebsite.api.request.CategoryPostRequest;
-import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.constant.CategoryTestConstant;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.exception.EntityExistException;
@@ -149,7 +148,6 @@ public class CategoryServiceTest {
 
         @Test
         void givenInvalidInput_whenDelete_thenThrowConstraintViolationException(){
-
         }
     }
 }

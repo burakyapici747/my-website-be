@@ -1,6 +1,5 @@
 package com.blog.mywebsite;
 
-import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

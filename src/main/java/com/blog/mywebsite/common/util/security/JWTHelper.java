@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 public final class JWTHelper {
-
     private JWTHelper(){
         throw new AssertionError();
     }

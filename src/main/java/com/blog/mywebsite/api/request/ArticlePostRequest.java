@@ -6,17 +6,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+
 public record ArticlePostRequest(
-        @NullableSize(size = 36, message = "CategoryId field must be empty or 36 characters long.")
+        @NullableSize(message = CATEGORY_ID_SIZE_MESSAGE)
         String categoryId,
-        @NotBlank(message = "Title cannot be empty or null.")
-        @Size(min = 5, max = 255, message = "Title field must be between 5 and 255 characters long.")
+        @NotBlank(message = ARTICLE_TITLE_BLANK_MESSAGE)
+        @Size(min = ARTICLE_TITLE_MIN_LENGTH, max = ARTICLE_TITLE_MAX_LENGTH, message = ARTICLE_TITLE_MESSAGE)
         String title,
-        @NotBlank(message = "Content cannot be empty or null.")
-        @Size(min = 5, max = 1000, message = "Content field must be between 5 and 100 characters long.")
+        @NotBlank(message = ARTICLE_CONTENT_BLANK_MESSAGE)
+        @Size(min = ARTICLE_CONTENT_MIN_LENGTH, max = ARTICLE_CONTENT_MAX_LENGTH, message = ARTICLE_CONTENT_MESSAGE)
         String content,
-        @Positive(message = "ReadingTime field must be positive.")
+        @Positive(message = READING_TIME_MESSAGE)
         int readingTime,
-        @ISO8601Validation
+        //@ISO8601Validation
         String publishDate
 ){}

@@ -16,7 +16,7 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         this.principal = principal;
         this.credentials = credentials;
         this.setAuthenticated(false);
-    }
+   }
 
    public EmailAuthenticationToken(
            Object principal,
@@ -52,7 +52,7 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     public String getEmail(){
-        return ((CustomUserDetails)this.principal).getEmail();
+        return ((CustomUserDetails) this.principal).getEmail();
     }
 
     @Override

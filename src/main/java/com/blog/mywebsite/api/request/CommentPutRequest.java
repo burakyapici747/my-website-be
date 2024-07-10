@@ -1,14 +1,10 @@
 package com.blog.mywebsite.api.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-//TODO: Message alanlarını ingilizce olarak değiştir!
+import static com.blog.mywebsite.constant.ValidationConstant.*;
+
 public record CommentPutRequest(
-        @NotBlank(message = "Content boş bırakılamaz!")
-        @Size(max = 100, message = "Content max 100 karakter olabilir!")
-        String content,
-        @Positive(message = "Rate sadece pozitif olabilir!")
-        long rate
+        @Size(min = COMMENT_CONTENT_MIN_LENGTH, max = COMMENT_CONTENT_MAX_LENGTH, message = COMMENT_CONTENT_SIZE_MESSAGE)
+        String content
 ) { }

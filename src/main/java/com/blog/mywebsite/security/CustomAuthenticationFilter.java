@@ -2,7 +2,6 @@ package com.blog.mywebsite.security;
 
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.api.response.SuccessfulDataResponse;
 import com.blog.mywebsite.common.util.security.JWTHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
@@ -23,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.Assert;
+import static com.blog.mywebsite.constant.APIConstant.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,13 +31,11 @@ import java.util.Map;
 public class CustomAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final AuthenticationManager authenticationManager;
-    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/api/user/login", "POST");
+    private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(USER_LOGIN_URL, "POST");
     private String emailParameter = "email";
     private boolean postOnly = true;
 
-    public CustomAuthenticationFilter(
-            AuthenticationManager authenticationManager
-    ) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
         this.authenticationManager = authenticationManager;
     }
@@ -48,10 +46,8 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             HttpServletResponse response
     ) throws IOException {
         attemptAuthenticationValidations(request);
-
         final String email = obtainEmail(request);
         final EmailAuthenticationToken token = new EmailAuthenticationToken(email, null);
-
         return authenticationManager.authenticate(token);
     }
 
@@ -67,14 +63,13 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
 
-        //TODO COOKIE eklenecek
-
         final Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
-        BaseResponse<Map<String, String>> responseData =
-                new SuccessfulDataResponse<>(HttpServletResponse.SC_OK, "", data);
-
+        BaseResponse<Map<String, String>> responseData = new BaseResponse<>(
+                null,
+                data
+        );
         new ObjectMapper().writeValue(response.getOutputStream(), responseData);
     }
 
@@ -127,6 +122,6 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
             throw new AuthenticationServiceException("ContentType must be application/json");
         }
 
-        //TODO Email boş gelme durumunu vs. kontrol et eğer boş işe client'e success false dön.
+        //Email boş gelme durumunu vs. kontrol et eğer boş işe client'e success false dön.
     }
 }
