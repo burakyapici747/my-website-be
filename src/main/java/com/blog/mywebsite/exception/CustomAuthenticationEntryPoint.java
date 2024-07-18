@@ -36,6 +36,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                         "Title Error",
                         "Authentication required. Please log in to the system.",
                         null,
+                        new ErrorResponse.Error.Source(
+                                null,
+                                null
+                        ),
                         new ErrorResponse.Error.Meta(
                                 UUID.randomUUID().toString(),
                                 LocalDateTime.now(),

@@ -37,6 +37,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         "Title Error",
                         "You do not have permission to access this resource.",
                         null,
+                        new ErrorResponse.Error.Source(
+                                null,
+                                null
+                        ),
                         new ErrorResponse.Error.Meta(
                                 UUID.randomUUID().toString(),
                                 LocalDateTime.now(),

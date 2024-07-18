@@ -1,26 +1,18 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.input.article.*;
 import com.blog.mywebsite.api.output.ArticleOutput;
-import com.blog.mywebsite.api.request.ArticleGetByDateRange;
-import com.blog.mywebsite.api.request.ArticleGetRequest;
-import com.blog.mywebsite.api.request.ArticlePostRequest;
-import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
-import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.mapper.ArticleMapper;
 import com.blog.mywebsite.service.ArticleService;
-import com.blog.mywebsite.validation.ISO8601Validation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static com.blog.mywebsite.constant.ValidationConstant.*;
 import static com.blog.mywebsite.constant.APIConstant.*;
-
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -33,17 +25,16 @@ public class ArticleController {
     public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
     }
+
     @GetMapping("/articles")
-    public ResponseEntity<BaseResponse<List<ArticleOutput>>> getArticles(
-            @ModelAttribute @Valid ArticleGetRequest articleGetRequest
-    ) {
+    public ResponseEntity<BaseResponse<List<ArticleOutput>>> getArticles(@Valid ArticleGetInput articleGetInput){
         BaseResponse<List<ArticleOutput>> response = new BaseResponse<>(
                 null,
                 ArticleMapper.INSTANCE.articleDTOListToArticleOutputList(articleService.getArticles(
-                        articleGetRequest.id(),
-                        articleGetRequest.categoryId(),
-                        articleGetRequest.publishDate(),
-                        articleGetRequest.readingTime()
+                        articleGetInput.id(),
+                        articleGetInput.title(),
+                        articleGetInput.publishDate(),
+                        articleGetInput.readingTime()
                 ))
         );
         return ResponseEntity.ok(response);
@@ -51,12 +42,12 @@ public class ArticleController {
 
     @GetMapping("/by-date-range")
     public ResponseEntity<BaseResponse<List<ArticleOutput>>> getByDateRange(
-            @Valid ArticleGetByDateRange articleGetByDateRange
+            @Valid ArticleGetByDateRangeInput articleGetByDateRangeInput
     ) {
         BaseResponse<List<ArticleOutput>> response = new BaseResponse<>(
                 null,
                 ArticleMapper.INSTANCE.articleDTOListToArticleOutputList(
-                        articleService.getByDateRange(articleGetByDateRange.from(), articleGetByDateRange.to())
+                        articleService.getByDateRange(articleGetByDateRangeInput.from(), articleGetByDateRangeInput.to())
                 )
         );
         return ResponseEntity.ok(response);
@@ -64,22 +55,24 @@ public class ArticleController {
 
     @GetMapping("/grouped-by-year")
     public ResponseEntity<BaseResponse<Map<Integer, List<ArticleOutput>>>> getGroupedByYear(
-            @RequestParam("publishDate")
-            @ISO8601Validation
-            LocalDate publishDate,
-            @RequestParam("searchOperation") SearchOperation searchOperation
+            @Valid ArticleGetGroupedByYearInput articleGetGroupedByYearInput
     ) {
         BaseResponse<Map<Integer, List<ArticleOutput>>> response = new BaseResponse<>(
                 null,
-                ArticleMapper.INSTANCE.toArticleOutputMap(articleService.getGroupedArticlesByYear(publishDate, searchOperation))
+                ArticleMapper.INSTANCE.toArticleOutputMap(
+                        articleService.getGroupedArticlesByYear(
+                                articleGetGroupedByYearInput.publishDate(),
+                                articleGetGroupedByYearInput.searchOperation()
+                        )
+                )
         );
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/by-category")
     public ResponseEntity<BaseResponse<Map<Integer, List<ArticleOutput>>>> getByCategoryNameGroupedByYear(
-            @RequestParam("categoryName") String categoryName
-    ) {
+            @RequestParam(value = "categoryName", required = false) String categoryName
+    ){
         BaseResponse<Map<Integer, List<ArticleOutput>>> response = new BaseResponse<>(
                 null,
                 ArticleMapper.INSTANCE.toArticleOutputMap(
@@ -91,11 +84,11 @@ public class ArticleController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<ArticleOutput>> create(
-            @RequestBody @Valid ArticlePostRequest articlePostRequest,
-            BindingResult bindingResult
-    ) {
+            @RequestBody @Valid ArticlePostInput articlePostInput
+    ){
         BaseResponse<ArticleOutput> response = new BaseResponse<>(
-                null, ArticleMapper.INSTANCE.articleDTOToArticleOutput(articleService.create(articlePostRequest))
+                null,
+                ArticleMapper.INSTANCE.articleDTOToArticleOutput(articleService.create(articlePostInput))
         );
         return ResponseEntity.ok(response);
     }
@@ -105,12 +98,11 @@ public class ArticleController {
             @RequestParam("id")
             @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
             String id,
-            @RequestBody @Valid ArticlePutRequest articlePutRequest,
-            BindingResult bindingResult
+            @RequestBody ArticlePutInput articlePutInput
     ) {
         BaseResponse<ArticleOutput> response = new BaseResponse<>(
                 null,
-                ArticleMapper.INSTANCE.articleDTOToArticleOutput(articleService.updateById(id, articlePutRequest))
+                ArticleMapper.INSTANCE.articleDTOToArticleOutput(articleService.updateById(id, articlePutInput))
         );
         return ResponseEntity.ok(response);
     }

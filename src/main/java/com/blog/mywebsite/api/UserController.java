@@ -35,6 +35,15 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/currentUser")
+    public ResponseEntity<BaseResponse<UserOutput>> getCurrentUser(){
+        BaseResponse<UserOutput> response = new BaseResponse<>(
+                null,
+                UserMapper.INSTANCE.userDTOToUserOutput(userService.getCurrentUser())
+        );
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<String>> create(@RequestBody UserCreateRequest userCreateRequest){
         BaseResponse<String> response = new BaseResponse<>(

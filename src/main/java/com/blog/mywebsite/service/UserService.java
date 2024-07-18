@@ -8,6 +8,7 @@ public interface UserService {
     UserDTO getById(String id);
     String create(UserCreateRequest userCreateRequest);
     UserDTO deleteById(String id);
+    UserDTO getCurrentUser();
     UserDTO updateNameById(String id, String name);
     UserDTO deleteCurrentUser();
 }

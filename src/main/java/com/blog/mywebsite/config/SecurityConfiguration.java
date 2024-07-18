@@ -59,9 +59,9 @@ public class SecurityConfiguration {
                     auth.requestMatchers(HttpMethod.GET).permitAll();
                 })
                 .authorizeHttpRequests(auth->{
-                    auth.requestMatchers(HttpMethod.POST).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.PUT).hasAuthority(ADMIN.getValue());
-                    auth.requestMatchers(HttpMethod.DELETE).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.POST, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.PUT, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
+                    auth.requestMatchers(HttpMethod.DELETE, ALL_CATEGORY_URL).hasAuthority(ADMIN.getValue());
                     auth.requestMatchers(HttpMethod.GET).permitAll();
                 })
                 .authorizeHttpRequests(auth->{

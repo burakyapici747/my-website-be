@@ -1,7 +1,7 @@
 package com.blog.mywebsite.service.impl;
 
-import com.blog.mywebsite.api.request.CommentPostRequest;
-import com.blog.mywebsite.api.request.CommentPutRequest;
+import com.blog.mywebsite.api.input.comment.CommentPostInput;
+import com.blog.mywebsite.api.input.comment.CommentPutInput;
 import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CommentDTO;
@@ -46,19 +46,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO updateById(String id, CommentPutRequest commentUpdateRequest) {
+    public CommentDTO updateById(String id, CommentPutInput commentPutInput) {
         Comment comment = findById(id);
-        comment.setContent(commentUpdateRequest.content());
+        comment.setContent(commentPutInput.content());
         return CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
     }
 
     @Override
-    public CommentDTO create(CommentPostRequest commentPostRequest) {
-        ValueUtil.checkDataIsNull(commentPostRequest, "CommentPostRequest is can not be null.");
+    public CommentDTO create(CommentPostInput commentPostInput) {
+        ValueUtil.checkDataIsNull(commentPostInput, "CommentPostInput is can not be null.");
 
         Comment comment = new Comment();
-        comment.setContent(commentPostRequest.content());
-        checkParentCommentExistThenSetParentComment(commentPostRequest.parentId(), comment);
+        comment.setContent(commentPostInput.content());
+        checkParentCommentExistThenSetParentComment(commentPostInput.parentId(), comment);
         return CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
     }
 

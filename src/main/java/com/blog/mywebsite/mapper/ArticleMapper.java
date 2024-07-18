@@ -1,7 +1,7 @@
 package com.blog.mywebsite.mapper;
 
+import com.blog.mywebsite.api.input.article.ArticlePutInput;
 import com.blog.mywebsite.api.output.ArticleOutput;
-import com.blog.mywebsite.api.request.ArticlePutRequest;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
 import org.mapstruct.*;
@@ -24,5 +24,5 @@ public interface ArticleMapper {
     ArticleOutput.Attributes toAttributes(ArticleDTO articleDTO);
     Map<Integer, List<ArticleOutput>> toArticleOutputMap(Map<Integer, List<ArticleDTO>> articleDTOMap);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void articlePutRequestToArticleDTO(ArticlePutRequest articlePutRequest, @MappingTarget Article article);
+    void articlePutRequestToArticleDTO(ArticlePutInput articlePutInput, @MappingTarget Article article);
 }

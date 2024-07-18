@@ -1,12 +1,9 @@
 package com.blog.mywebsite.util;
 
-import com.blog.mywebsite.api.request.CategoryPostRequest;
-import com.blog.mywebsite.constant.CategoryTestConstant;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.model.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.blog.mywebsite.constant.CategoryTestConstant.*;

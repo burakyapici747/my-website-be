@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = DateByRangeValidator.class)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE,  ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateByRangeValidation {
     String message() default "`from` should be more recent then `to`";

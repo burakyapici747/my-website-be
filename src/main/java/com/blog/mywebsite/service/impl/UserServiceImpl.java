@@ -39,6 +39,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getCurrentUser(){
+        User user = systemHelper.getCurrentUser();
+        return UserMapper.INSTANCE.userToUserDTO(user);
+    }
+
+    @Override
     public String create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
 
