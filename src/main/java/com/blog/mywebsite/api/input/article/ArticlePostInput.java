@@ -1,4 +1,4 @@
-package com.blog.mywebsite.api.request;
+package com.blog.mywebsite.api.input.article;
 
 import com.blog.mywebsite.validation.ISO8601Validation;
 import com.blog.mywebsite.validation.NullableSize;
@@ -7,8 +7,9 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import static com.blog.mywebsite.constant.ValidationConstant.*;
+import static com.blog.mywebsite.constant.ValidationConstant.READING_TIME_MESSAGE;
 
-public record ArticlePostRequest(
+public record ArticlePostInput(
         @NullableSize(message = CATEGORY_ID_SIZE_MESSAGE)
         String categoryId,
         @NotBlank(message = ARTICLE_TITLE_BLANK_MESSAGE)

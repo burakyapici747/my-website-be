@@ -2,11 +2,13 @@ package com.blog.mywebsite.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+@Component
 public class ISO8601Validator implements ConstraintValidator<ISO8601Validation, LocalDate> {
     @Override
     public void initialize(ISO8601Validation constraintAnnotation) {
@@ -16,14 +18,13 @@ public class ISO8601Validator implements ConstraintValidator<ISO8601Validation, 
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
-            return false;
+            return true;
         }
 
         try {
             DateTimeFormatter.ISO_LOCAL_DATE.format(value);
             return true;
         } catch (DateTimeParseException e) {
-            System.out.println("burak" + e.getMessage());
             return false;
         }
     }

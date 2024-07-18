@@ -1,6 +1,5 @@
 package com.blog.mywebsite.util;
 
-import com.blog.mywebsite.api.request.ArticlePostRequest;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
 

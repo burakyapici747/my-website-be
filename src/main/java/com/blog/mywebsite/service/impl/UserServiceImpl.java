@@ -1,7 +1,6 @@
 package com.blog.mywebsite.service.impl;
 
 import com.blog.mywebsite.api.request.UserCreateRequest;
-import com.blog.mywebsite.api.response.*;
 import com.blog.mywebsite.common.util.security.JWTHelper;
 import com.blog.mywebsite.common.util.security.SystemHelper;
 import com.blog.mywebsite.constant.EntityConstant;
@@ -15,7 +14,6 @@ import com.blog.mywebsite.repository.UserRepository;
 import com.blog.mywebsite.service.MailService;
 import com.blog.mywebsite.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +33,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse<UserDTO> getById(String id){
+    public UserDTO getById(String id){
         User user = findById(id);
-        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_FETCH, userDTO);
+        return UserMapper.INSTANCE.userToUserDTO(user);
     }
 
     @Override
-    public BaseResponse<String> create(UserCreateRequest userCreateRequest) {
+    public UserDTO getCurrentUser(){
+        User user = systemHelper.getCurrentUser();
+        return UserMapper.INSTANCE.userToUserDTO(user);
+    }
+
+    @Override
+    public String create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
 
         String jwtToken = JWTHelper.generateJwtToken(
@@ -58,31 +61,30 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_CREATE, jwtToken);
+        return jwtToken;
     }
 
     @Override
-    public BaseResponse<UserDTO> updateNameById(String id, String name) {
+    public UserDTO updateNameById(String id, String name) {
         User user = findById(id);
         user.setName(name);
 
         userRepository.save(user);
-        UserDTO userDTO = UserMapper.INSTANCE.userToUserDTO(user);
-        return new SuccessfulDataResponse<>(HttpStatus.OK.value(), EntityConstant.SUCCESS_UPDATE, userDTO);
+        return  UserMapper.INSTANCE.userToUserDTO(user);
     }
 
     @Override
-    public BaseResponse<Void> deleteById(String id) {
+    public UserDTO deleteById(String id) {
         User user = findById(id);
         userRepository.delete(user);
-        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return UserMapper.INSTANCE.userToUserDTO(user);
     }
 
     @Override
-    public BaseResponse<Void> deleteCurrentUser(){
+    public UserDTO deleteCurrentUser(){
         User user = systemHelper.getCurrentUser();
         userRepository.delete(user);
-        return new SuccessfulResponse(HttpStatus.OK.value(), EntityConstant.SUCCESS_DELETE);
+        return UserMapper.INSTANCE.userToUserDTO(user);
     }
 
     private void checkUserIsExistByEmail(String email){

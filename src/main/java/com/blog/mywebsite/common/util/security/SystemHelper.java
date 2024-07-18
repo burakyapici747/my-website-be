@@ -26,6 +26,6 @@ public class SystemHelper {
             String userEmail = emailAuthenticationToken.getEmail();
             return customUserDetailsService.getUserByEmail(userEmail);
         }
-        throw new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA);
+        throw new EntityNotFoundException(EntityConstant.USER_NOT_FOUND);
     }
 }

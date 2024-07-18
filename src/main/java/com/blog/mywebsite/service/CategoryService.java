@@ -1,18 +1,17 @@
 package com.blog.mywebsite.service;
 
-import com.blog.mywebsite.api.request.CategoryPostRequest;
-import com.blog.mywebsite.api.request.CategoryPutRequest;
-import com.blog.mywebsite.api.response.BaseResponse;
+import com.blog.mywebsite.api.input.category.CategoryPostInput;
+import com.blog.mywebsite.api.input.category.CategoryPutInput;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.model.Category;
 import java.util.List;
 import java.util.Map;
 
 public interface CategoryService {
-    BaseResponse<List<CategoryDTO>> getCategories(String id, String parentId, String name);
-    BaseResponse<Map<String, List<CategoryDTO>>> getGroupedCategoriesWithSubcategories();
-    BaseResponse<Void> deleteById(String id);
-    BaseResponse<CategoryDTO> create(CategoryPostRequest categoryPostRequest);
-    BaseResponse<CategoryDTO> updateById(String id, CategoryPutRequest categoryPutRequest);
+    List<CategoryDTO> getCategories(String id, String parentId, String name);
+    Map<String, List<CategoryDTO>> getGroupedCategoriesWithSubcategories();
+    CategoryDTO deleteById(String id);
+    CategoryDTO create(CategoryPostInput categoryPostInput);
+    CategoryDTO updateById(String id, CategoryPutInput categoryPutInput);
     Category findById(String id);
 }
