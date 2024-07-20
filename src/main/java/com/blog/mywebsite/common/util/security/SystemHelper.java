@@ -23,7 +23,7 @@ public class SystemHelper {
                 (EmailAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
         if (Objects.nonNull(emailAuthenticationToken)) {
-            String userEmail = emailAuthenticationToken.getEmail();
+            String userEmail = (String) emailAuthenticationToken.getEmail();
             return customUserDetailsService.getUserByEmail(userEmail);
         }
         throw new EntityNotFoundException(EntityConstant.USER_NOT_FOUND);

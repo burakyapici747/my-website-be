@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
         String jwtToken = JWTHelper.generateJwtToken(
                 userCreateRequest.email(),
-                List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
+                List.of(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
         );
 
         Role role = getRoleForUser();

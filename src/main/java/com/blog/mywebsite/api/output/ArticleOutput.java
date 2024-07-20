@@ -8,6 +8,7 @@ public record ArticleOutput(
         Attributes attributes
 ){
     public record Attributes(
+            String id,
             String title,
             String content,
             int readingTime,

@@ -1,8 +1,6 @@
 package com.blog.mywebsite.mapper;
 
-import com.blog.mywebsite.api.output.ArticleOutput;
 import com.blog.mywebsite.api.output.CommentOutput;
-import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.model.Comment;
 import org.mapstruct.*;

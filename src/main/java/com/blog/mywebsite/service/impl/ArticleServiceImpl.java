@@ -3,6 +3,7 @@ package com.blog.mywebsite.service.impl;
 import com.blog.mywebsite.api.input.article.ArticlePostInput;
 import com.blog.mywebsite.api.input.article.ArticlePutInput;
 import com.blog.mywebsite.common.util.ValueUtil;
+import com.blog.mywebsite.constant.DateConstant;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
@@ -67,6 +68,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleDTO> getByDateRange(LocalDate startDate, LocalDate endDate){
+        startDate = Optional.ofNullable(startDate).orElse(LocalDate.of(DateConstant.START_YEAR, DateConstant.START_MONTH, DateConstant.START_DAY));
+        endDate = Optional.ofNullable(endDate).orElse(LocalDate.now());
         return ArticleMapper.INSTANCE.articlesToArticleDTOs(articleRepository.findByPublishDateBetween(startDate, endDate));
     }
 

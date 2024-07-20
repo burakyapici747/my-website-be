@@ -29,9 +29,7 @@ public class CommentController {
     }
 
     @GetMapping(COMMENTS_URL)
-    public ResponseEntity<BaseResponse<List<CommentOutput>>> getComments(
-            @Valid CommentGetInput commentGetInput
-            ){
+    public ResponseEntity<BaseResponse<List<CommentOutput>>> getComments(@Valid CommentGetInput commentGetInput){
         BaseResponse<List<CommentOutput>> response = new BaseResponse<>(
                 null,
                 CommentMapper.INSTANCE.commentDTOListToCommentOutputList(
@@ -42,9 +40,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CommentOutput>> create(
-            @RequestBody @Valid CommentPostInput commentPostInput
-    ){
+    public ResponseEntity<BaseResponse<CommentOutput>> create(@RequestBody @Valid CommentPostInput commentPostInput){
         BaseResponse<CommentOutput> response = new BaseResponse<>(
                 null,
                 CommentMapper.INSTANCE.commentDTOToCommentOutput(commentService.create(commentPostInput))

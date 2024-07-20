@@ -7,6 +7,7 @@ public record CommentOutput(
     public record Attributes(
             String id,
             String articleId,
+            String parentId,
             String content
     ){}
 }

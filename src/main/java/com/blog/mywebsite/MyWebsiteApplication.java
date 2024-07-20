@@ -1,5 +1,6 @@
 package com.blog.mywebsite;
 
+import com.blog.mywebsite.model.Role;
 import com.blog.mywebsite.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +20,7 @@ public class MyWebsiteApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//Role role = new Role(com.blog.mywebsite.enumerator.Role.USER.getValue());
-		//roleRepository.save(role);
+//		Role role = new Role(com.blog.mywebsite.enumerator.Role.ADMIN.getValue());
+//		roleRepository.save(role);
 	}
 }

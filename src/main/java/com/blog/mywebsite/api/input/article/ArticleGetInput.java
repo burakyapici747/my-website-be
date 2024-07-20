@@ -1,9 +1,9 @@
 package com.blog.mywebsite.api.input.article;
 
-import com.blog.mywebsite.validation.ISO8601Validation;
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -16,8 +16,8 @@ public record ArticleGetInput(
         @Nullable
         @Size(min = ARTICLE_TITLE_MIN_LENGTH, max = ARTICLE_TITLE_MAX_LENGTH, message = ARTICLE_TITLE_MESSAGE)
         String title,
-        @Nullable
-        @ISO8601Validation
+
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         LocalDate publishDate,
         @Nullable
         @Positive(message = READING_TIME_MESSAGE)
