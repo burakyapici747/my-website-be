@@ -11,4 +11,5 @@ public interface ArticleRepository extends JpaRepository<Article, String>, JpaSp
     List<Article> findByPublishDate(LocalDate date);
     List<Article> findByPublishDateBetween(LocalDate startDate, LocalDate endDate);
     List<Article> findByCategoryName(String categoryName);
+    boolean existsByTitle(String title);
 }

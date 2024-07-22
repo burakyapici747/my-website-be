@@ -2,9 +2,12 @@ package com.blog.mywebsite.api;
 
 import com.blog.mywebsite.api.input.article.*;
 import com.blog.mywebsite.api.output.ArticleOutput;
+import com.blog.mywebsite.api.output.CommentOutput;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.mapper.ArticleMapper;
+import com.blog.mywebsite.mapper.CommentMapper;
 import com.blog.mywebsite.service.ArticleService;
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
@@ -82,10 +85,23 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<BaseResponse<ArticleOutput>> create(
-            @RequestBody @Valid ArticlePostInput articlePostInput
+    @GetMapping("comments")
+    public ResponseEntity<BaseResponse<List<CommentOutput>>> getComments(
+            @RequestParam(value = "id")
+            @Valid
+            @Nullable
+            @Size(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH, message = ID_SIZE_MESSAGE)
+            String id
     ){
+        BaseResponse<List<CommentOutput>> response = new BaseResponse<>(
+                null,
+                CommentMapper.INSTANCE.commentDTOListToCommentOutputList(articleService.getComments(id))
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<BaseResponse<ArticleOutput>> create(@RequestBody @Valid ArticlePostInput articlePostInput){
         BaseResponse<ArticleOutput> response = new BaseResponse<>(
                 null,
                 ArticleMapper.INSTANCE.articleDTOToArticleOutput(articleService.create(articlePostInput))

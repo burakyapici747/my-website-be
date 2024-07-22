@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(role);
 
         userRepository.save(user);
-        mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
+        //mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
         return jwtToken;
     }
 

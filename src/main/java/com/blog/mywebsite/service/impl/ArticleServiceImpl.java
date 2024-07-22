@@ -6,10 +6,14 @@ import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.constant.DateConstant;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
+import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
+import com.blog.mywebsite.exception.EntityExistException;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.mapper.ArticleMapper;
+import com.blog.mywebsite.mapper.CommentMapper;
 import com.blog.mywebsite.model.Article;
+import com.blog.mywebsite.model.Comment;
 import com.blog.mywebsite.repository.ArticleRepository;
 import com.blog.mywebsite.service.ArticleService;
 import com.blog.mywebsite.service.CategoryService;
@@ -33,12 +37,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleDTO> getArticles(
-            String id,
-            String title,
-            LocalDate publishDate,
-            Integer readingTime
-    ) {
+    public List<ArticleDTO> getArticles(String id, String title, LocalDate publishDate, Integer readingTime) {
         CommonSpecification<Article> specification = new CommonSpecification<>();
         specification.add(new SearchCriteria(ID, id, SearchOperation.EQUAL));
         specification.add(new SearchCriteria(TITLE, title, SearchOperation.EQUAL));
@@ -74,16 +73,23 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<CommentDTO> getComments(String id){
+        List<Comment> commentList = findById(id).getComments();
+        return CommentMapper.INSTANCE.commentsToCommentDTOs(commentList);
+    }
+
+    @Override
     public ArticleDTO create(ArticlePostInput articlePostInput) {
         ValueUtil.checkDataIsNull(articlePostInput, "ArticlePostRequest is can not be null.");
+        checkTitleIsExistByTitle(articlePostInput.title());
 
         Article article = new Article();
+        checkCategoryExistAndSetArticleCategoryName(articlePostInput.categoryId(), article);
         article.setTitle(articlePostInput.title());
         article.setContent(articlePostInput.content());
         article.setReadingTime(articlePostInput.readingTime());
         article.setRate(0);
         article.setPublishDate(LocalDate.parse(articlePostInput.publishDate()));
-        checkCategoryExistAndSetArticleCategoryName(articlePostInput.categoryId(), article);
         return ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
     }
 
@@ -101,9 +107,9 @@ public class ArticleServiceImpl implements ArticleService {
         return ArticleMapper.INSTANCE.articleToArticleDTO(article);
     }
 
-    private Article findById(String id){
+    public Article findById(String id){
         return articleRepository.findById(id)
-                .orElseThrow( () -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(EntityConstant.ARTICLE_NOT_FOUND));
     }
 
     private void checkCategoryExistAndSetArticleCategoryName(String categoryId, Article article){
@@ -112,12 +118,18 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
+    private void checkTitleIsExistByTitle(String title){
+        if(articleRepository.existsByTitle(title)){
+            throw new EntityExistException("An article with the same title already exists. Please choose a different title.");
+        }
+    }
+
     private Map<Integer, List<ArticleDTO>> getArticlesGroupedByYearSorted(List<ArticleDTO> articleDTOList){
         return articleDTOList.stream()
-                .collect(Collectors.groupingBy(
-                        articleDTO -> articleDTO.publishDate().getYear(),
-                        TreeMap::new,
-                        Collectors.toList()
-                ));
+            .collect(Collectors.groupingBy(
+                    articleDTO -> articleDTO.publishDate().getYear(),
+                    TreeMap::new,
+                    Collectors.toList()
+            ));
     }
 }

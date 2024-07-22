@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public final class ArticleTestConstant {
     private ArticleTestConstant() {throw new AssertionError();}
+    public static final String ID = UUID.randomUUID().toString();
     public static final String CATEGORY_ID = UUID.randomUUID().toString();
     public static final String TITLE = "Micro Service";
     public static final String CONTENT = "Content";

@@ -46,10 +46,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<BaseResponse<String>> create(@RequestBody UserCreateRequest userCreateRequest){
-        BaseResponse<String> response = new BaseResponse<>(
-                null,
-                userService.create(userCreateRequest)
-        );
+        BaseResponse<String> response = new BaseResponse<>(null, userService.create(userCreateRequest));
         return ResponseEntity.ok(response);
     }
 

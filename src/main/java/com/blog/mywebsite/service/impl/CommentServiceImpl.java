@@ -8,8 +8,10 @@ import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.mapper.CommentMapper;
+import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.model.Comment;
 import com.blog.mywebsite.repository.CommentRepository;
+import com.blog.mywebsite.service.ArticleService;
 import com.blog.mywebsite.service.CommentService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
@@ -23,9 +25,11 @@ import static com.blog.mywebsite.constant.CommentConstant.*;
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
+    private final ArticleService articleService;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, ArticleService articleService) {
         this.commentRepository = commentRepository;
+        this.articleService = articleService;
     }
 
     @Override
@@ -56,8 +60,10 @@ public class CommentServiceImpl implements CommentService {
     public CommentDTO create(CommentPostInput commentPostInput) {
         ValueUtil.checkDataIsNull(commentPostInput, "CommentPostInput is can not be null.");
 
+        Article article = articleService.findById(commentPostInput.articleId());
         Comment comment = new Comment();
         comment.setContent(commentPostInput.content());
+        article.getComments().add(comment);
         checkParentCommentExistThenSetParentComment(commentPostInput.parentId(), comment);
         return CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
     }

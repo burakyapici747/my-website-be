@@ -98,4 +98,12 @@ public class Article extends BaseEntity {
     public void setCategory(Category category){
         this.category = category;
     }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
 }

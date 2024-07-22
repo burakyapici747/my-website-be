@@ -1,47 +1,55 @@
 package com.blog.mywebsite.util;
 
+import com.blog.mywebsite.api.input.article.ArticlePostInput;
+import com.blog.mywebsite.constant.ArticleTestConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
-
-import java.util.UUID;
-
-import static com.blog.mywebsite.constant.ArticleTestConstant.*;
 
 public final class ArticleTestUtil {
     private ArticleTestUtil() {throw new AssertionError();}
 
-    public static ArticlePostRequest createArticlePostRequest() {
-        return new ArticlePostRequest(
-                CATEGORY_ID,
-                TITLE,
-                CONTENT,
-                READING_TIME,
-                PUBLISH_DATE
+    public static ArticlePostInput createArticlePostInput(){
+        return new ArticlePostInput(
+                ArticleTestConstant.CATEGORY_ID,
+                ArticleTestConstant.TITLE,
+                ArticleTestConstant.CONTENT,
+                ArticleTestConstant.READING_TIME,
+                ArticleTestConstant.PUBLISH_DATE
         );
     }
 
-    public static Article createArticle() {
-        Article article = new Article();
-
-        article.setId(UUID.randomUUID().toString());
-        article.setRate(RATE);
-        article.setTitle(TITLE);
-        article.setContent(CONTENT);
-        article.setReadingTime(READING_TIME);
-        article.setPublishDate(PUBLISH_DATE_IN_DATE);
-        article.setCreatedAt(CREATED_AT);
-
-        return article;
+    public static ArticlePostInput createArticlePostInputWithNullCategoryId(){
+        return new ArticlePostInput(
+                null,
+                ArticleTestConstant.TITLE,
+                ArticleTestConstant.CONTENT,
+                ArticleTestConstant.READING_TIME,
+                ArticleTestConstant.PUBLISH_DATE
+        );
     }
 
-    public static ArticleDTO createArticleDTO() {
+    public static ArticleDTO createArticleDTO(){
         return new ArticleDTO(
-                TITLE,
-                CONTENT,
-                READING_TIME,
-                RATE,
-                PUBLISH_DATE_IN_DATE,
-                CREATED_AT
+                ArticleTestConstant.ID,
+                ArticleTestConstant.TITLE,
+                ArticleTestConstant.CONTENT,
+                ArticleTestConstant.READING_TIME,
+                ArticleTestConstant.RATE,
+                ArticleTestConstant.PUBLISH_DATE_IN_DATE,
+                ArticleTestConstant.CREATED_AT
         );
+    }
+
+    public static Article createArticle(){
+        Article article = new Article();
+        article.setId(ArticleTestConstant.ID);
+        article.setCategory(null);
+        article.setContent(ArticleTestConstant.CONTENT);
+        article.setTitle(ArticleTestConstant.TITLE);
+        article.setRate(ArticleTestConstant.RATE);
+        article.setPublishDate(ArticleTestConstant.PUBLISH_DATE_IN_DATE);
+        article.setReadingTime(ArticleTestConstant.READING_TIME);
+        article.setCreatedAt(ArticleTestConstant.CREATED_AT);
+        return article;
     }
 }
