@@ -2,8 +2,12 @@ package com.blog.mywebsite.util;
 
 import com.blog.mywebsite.api.input.article.ArticlePostInput;
 import com.blog.mywebsite.constant.ArticleTestConstant;
+import com.blog.mywebsite.constant.CommentTestConstant;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
+import com.blog.mywebsite.model.Comment;
+
+import java.util.List;
 
 public final class ArticleTestUtil {
     private ArticleTestUtil() {throw new AssertionError();}
@@ -16,6 +20,12 @@ public final class ArticleTestUtil {
                 ArticleTestConstant.READING_TIME,
                 ArticleTestConstant.PUBLISH_DATE
         );
+    }
+
+    public static Article createArticleWithComment(){
+        Article article = createArticle();
+        article.getComments().addAll(CommentTestUtil.createCommentList());
+        return article;
     }
 
     public static ArticlePostInput createArticlePostInputWithNullCategoryId(){
