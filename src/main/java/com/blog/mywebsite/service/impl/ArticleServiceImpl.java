@@ -96,6 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleDTO updateById(String id, ArticlePutInput articlePutInput) {
         Article article = findById(id);
+        checkTitleIsExistByTitle(articlePutInput.title());
         ArticleMapper.INSTANCE.articlePutRequestToArticleDTO(articlePutInput, article);
         return ArticleMapper.INSTANCE.articleToArticleDTO(articleRepository.save(article));
     }
