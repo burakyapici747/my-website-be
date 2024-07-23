@@ -1,7 +1,7 @@
 package com.blog.mywebsite.service.impl;
 
-import com.blog.mywebsite.api.request.CategoryPostRequest;
-import com.blog.mywebsite.api.request.CategoryPutRequest;
+import com.blog.mywebsite.api.input.category.CategoryPostInput;
+import com.blog.mywebsite.api.input.category.CategoryPutInput;
 import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.common.validator.CommonValidator;
 import com.blog.mywebsite.constant.EntityConstant;
@@ -63,30 +63,30 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryDTO create(CategoryPostRequest categoryPostRequest) {
-        ValueUtil.checkDataIsNull(categoryPostRequest, "CategoryPostRequest cannot be null");
-        CommonValidator.validateInput(categoryPostRequest);
-        checkCategoryIsExistByName(categoryPostRequest.name());
+    public CategoryDTO create(CategoryPostInput categoryPostInput) {
+        ValueUtil.checkDataIsNull(categoryPostInput, "CategoryPostInput cannot be null");
+        CommonValidator.validateInput(categoryPostInput);
+        checkCategoryIsExistByName(categoryPostInput.name());
 
         Category category = new Category();
-        category.setName(categoryPostRequest.name());
-        checkParentCategoryExistThenSetParentCategory(categoryPostRequest.parentId(), category);
+        category.setName(categoryPostInput.name());
+        checkParentCategoryExistThenSetParentCategory(categoryPostInput.parentId(), category);
         return CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
     }
 
     @Override
-    public CategoryDTO updateById(String id, CategoryPutRequest categoryPutRequest){
-        CommonValidator.validateInput(categoryPutRequest);
-        ValueUtil.checkDataIsNull(categoryPutRequest, "CategoryPutRequest cannot be null");
+    public CategoryDTO updateById(String id, CategoryPutInput categoryPutInput){
+        CommonValidator.validateInput(categoryPutInput);
+        ValueUtil.checkDataIsNull(categoryPutInput, "CategoryPutInput cannot be null");
         Category category = findById(id);
-        checkParentCategoryExistThenSetParentCategory(categoryPutRequest.parentId(), category);
-        CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutRequest, category);
+        checkParentCategoryExistThenSetParentCategory(categoryPutInput.parentId(), category);
+        CategoryMapper.INSTANCE.categoryPutRequestToCategoryDTO(categoryPutInput, category);
         return CategoryMapper.INSTANCE.categoryToCategoryDTO(categoryRepository.save(category));
     }
 
     public Category findById(String id){
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(EntityConstant.NOT_FOUND_DATA));
+                .orElseThrow(() -> new EntityNotFoundException(EntityConstant.CATEGORY_NOT_FOUND));
     }
 
     private void checkCategoryIsExistByName(String name){

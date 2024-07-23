@@ -3,6 +3,7 @@ package com.blog.mywebsite.security;
 import com.blog.mywebsite.api.request.UserLoginRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.common.util.security.JWTHelper;
+import com.blog.mywebsite.model.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
@@ -55,15 +56,16 @@ public class CustomAuthenticationFilter extends AbstractAuthenticationProcessing
     protected void successfulAuthentication(
             HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication)
             throws IOException {
-        final String email = ((EmailAuthenticationToken)authentication).getEmail();
+        CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
+        String email = customUserDetails.getEmail();
 
-        final String accessToken = JWTHelper.generateJwtToken(email, authentication.getAuthorities().stream()
+        String accessToken = JWTHelper.generateJwtToken(email, authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.OK.value());
 
-        final Map<String, String> data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
         data.put("access_token", accessToken);
 
         BaseResponse<Map<String, String>> responseData = new BaseResponse<>(

@@ -51,8 +51,8 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
         return this.principal;
     }
 
-    public String getEmail(){
-        return ((CustomUserDetails) this.principal).getEmail();
+    public Object getEmail(){
+        return this.principal;
     }
 
     @Override

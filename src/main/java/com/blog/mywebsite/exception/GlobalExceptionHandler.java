@@ -1,7 +1,9 @@
 package com.blog.mywebsite.exception;
 
 import com.blog.mywebsite.api.response.ErrorResponse;
-import com.blog.mywebsite.constant.APIConstant;
+import com.blog.mywebsite.constant.ResponseConstant;
+import com.blog.mywebsite.util.ErrorResponseFactory;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestControllerAdvice
@@ -20,27 +21,19 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(
-            ConstraintViolationException constraintViolationException
+            ConstraintViolationException constraintViolationException,
+            HttpServletRequest httpServletRequest
     ){
         Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
         List<ErrorResponse.Error> errors = new ArrayList<>();
         violations.forEach(
                 violation -> errors.add(
-                        new ErrorResponse.Error(
-                                "Deneme Id",
-                                null,
-                                String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                                "Constraint Violation Error",
-                                violation.getMessage(),
-                                new ErrorResponse.Error.Source(
-                                        violation.getPropertyPath().toString(),
-                                        "Bos parameter"
-                                ),
-                                new ErrorResponse.Error.Meta(
-                                    UUID.randomUUID().toString(),
-                                        LocalDateTime.now(),
-                                        APIConstant.VERSION
-                                )
+                        ErrorResponseFactory.createErrorResponse(
+                                constraintViolationException,
+                                httpServletRequest,
+                                HttpStatus.BAD_REQUEST,
+                                ResponseConstant.ERROR_CONSTRAINT_VIOLATION_EXCEPTION_TITLE,
+                                ResponseConstant.ERROR_CONSTRAINT_VIOLATION_EXCEPTION
                         )
                 )
         );
@@ -50,79 +43,50 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException methodArgumentNotValidException
+            MethodArgumentNotValidException methodArgumentNotValidException,
+            HttpServletRequest httpServletRequest
     ){
-        List<ErrorResponse.Error> errors = new ArrayList<>();
-        methodArgumentNotValidException.getBindingResult().getFieldErrors().forEach(
-                fieldError ->  errors.add(
-                        new ErrorResponse.Error(
-                                "Deneme id",
-                                null,
-                                String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                                "Method Argument Not Valid Error",
-                                fieldError.getDefaultMessage(),
-                                new ErrorResponse.Error.Source(
-                                        fieldError.getField(),
-                                        "Bos Parameter"
-                                ),
-                                new ErrorResponse.Error.Meta(
-                                        UUID.randomUUID().toString(),
-                                        LocalDateTime.now(),
-                                        APIConstant.VERSION
-                                )
-                        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                processErrors(
+                        methodArgumentNotValidException,
+                        httpServletRequest
                 )
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errors));
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
-            EntityNotFoundException entityNotFoundException
+            EntityNotFoundException entityNotFoundException,
+            HttpServletRequest httpServletRequest
     ){
         List<ErrorResponse.Error> errors = new ArrayList<>();
         errors.add(
-            new ErrorResponse.Error(
-                "Deneme id",
-                null,
-                String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                "Method Argument Not Valid Error",
-                "Error Detail",
-                new ErrorResponse.Error.Source(
-                        "Pointer",
-                        "Bos Parameter"
-                ),
-                new ErrorResponse.Error.Meta(
-                        UUID.randomUUID().toString(),
-                        LocalDateTime.now(),
-                        APIConstant.VERSION
+                ErrorResponseFactory.createErrorResponse(
+                        entityNotFoundException,
+                        httpServletRequest,
+                        HttpStatus.NOT_FOUND,
+                        entityNotFoundException.getMessage(),
+                        ResponseConstant.ERROR_NOT_FOUND_DETAILS_MESSAGE
                 )
-            )
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(new ErrorResponse(errors));
     }
 
     @ExceptionHandler(EntityExistException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ErrorResponse> handleEntityExistsException(EntityExistException entityExistException){
+    public ResponseEntity<ErrorResponse> handleEntityExistsException(
+            EntityExistException entityExistException,
+            HttpServletRequest httpServletRequest
+    ){
         List<ErrorResponse.Error> errors = new ArrayList<>();
         errors.add(
-                new ErrorResponse.Error(
-                        "Deneme id",
-                        null,
-                        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                        "Method Argument Not Valid Error",
-                        "Error Detail",
-                        new ErrorResponse.Error.Source(
-                                "Pointer",
-                                "Bos Parameter"
-                        ),
-                        new ErrorResponse.Error.Meta(
-                                UUID.randomUUID().toString(),
-                                LocalDateTime.now(),
-                                APIConstant.VERSION
-                        )
+                ErrorResponseFactory.createErrorResponse(
+                        entityExistException,
+                        httpServletRequest,
+                        HttpStatus.CONFLICT,
+                        ResponseConstant.ERROR_CONFLICT,
+                        entityExistException.getMessage()
                 )
         );
         return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(new ErrorResponse(errors));
@@ -130,26 +94,39 @@ public class GlobalExceptionHandler{
 
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UsernameNotFoundException usernameNotFoundException){
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(
+            UsernameNotFoundException usernameNotFoundException,
+            HttpServletRequest httpServletRequest
+    ){
         List<ErrorResponse.Error> errors = new ArrayList<>();
         errors.add(
-                new ErrorResponse.Error(
-                        "Deneme id",
-                        null,
-                        String.valueOf(HttpStatus.BAD_REQUEST.value()),
-                        "Method Argument Not Valid Error",
-                        "Error Detail",
-                        new ErrorResponse.Error.Source(
-                                "Pointer",
-                                "Bos Parameter"
-                        ),
-                        new ErrorResponse.Error.Meta(
-                                UUID.randomUUID().toString(),
-                                LocalDateTime.now(),
-                                APIConstant.VERSION
-                        )
+                ErrorResponseFactory.createErrorResponse(
+                        usernameNotFoundException,
+                        httpServletRequest,
+                        HttpStatus.NOT_FOUND,
+                        usernameNotFoundException.getMessage(),
+                        ResponseConstant.ERROR_NOT_FOUND_DETAILS_MESSAGE
                 )
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND.value()).body(new ErrorResponse(errors));
+    }
+
+    private ErrorResponse processErrors(
+            MethodArgumentNotValidException methodArgumentNotValidException,
+            HttpServletRequest httpServletRequest
+    ){
+        List<ErrorResponse.Error> validationErrorModels = new ArrayList<>();
+        methodArgumentNotValidException.getBindingResult().getAllErrors().forEach(error -> {
+            ErrorResponse.Error validationError = ErrorResponseFactory.createErrorResponse(
+                    methodArgumentNotValidException,
+                    httpServletRequest,
+                    HttpStatus.BAD_REQUEST,
+                    ResponseConstant.ERROR_INVALID_INPUT,
+                    error.getObjectName() + " " + error.getDefaultMessage()
+            );
+            validationErrorModels.add(validationError);
+        });
+
+        return new ErrorResponse(validationErrorModels);
     }
 }

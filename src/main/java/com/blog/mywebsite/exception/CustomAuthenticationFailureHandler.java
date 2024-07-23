@@ -36,6 +36,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                         "Title Error",
                         "The login information is incorrect. Please check your information and try again.",
                         null,
+                        new ErrorResponse.Error.Source(
+                                null,
+                                null
+                        ),
                         new ErrorResponse.Error.Meta(
                                 UUID.randomUUID().toString(),
                                 LocalDateTime.now(),

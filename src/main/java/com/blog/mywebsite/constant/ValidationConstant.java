@@ -39,6 +39,7 @@ public class ValidationConstant {
     public static final int CATEGORY_NAME_MAX_LENGTH = 55;
     public static final String CATEGORY_ID_SIZE_MESSAGE = "CategoryId" + ID_SIZE_MESSAGE;
     public static final String CATEGORY_PARENT_ID_MESSAGE = "ParentId" + ID_SIZE_MESSAGE;
+    public static final String CATEGORY_ID_BLANK_MESSAGE = "CategoryId cannot be empty or null.";
     public static final String CATEGORY_NAME_BLANK_MESSAGE = "Name" + BLANK_MESSAGE;
     public static final String CATEGORY_NAME_SIZE_MESSAGE = "Name" + FIELD_MUST_BE_BETWEEN + CATEGORY_NAME_MIN_LENGTH + AND + CATEGORY_NAME_MAX_LENGTH + CHARACTERS_LONG;
 

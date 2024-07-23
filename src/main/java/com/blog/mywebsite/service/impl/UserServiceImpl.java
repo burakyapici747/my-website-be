@@ -39,12 +39,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getCurrentUser(){
+        User user = systemHelper.getCurrentUser();
+        return UserMapper.INSTANCE.userToUserDTO(user);
+    }
+
+    @Override
     public String create(UserCreateRequest userCreateRequest) {
         checkUserIsExistByEmail(userCreateRequest.email());
 
         String jwtToken = JWTHelper.generateJwtToken(
                 userCreateRequest.email(),
-                List.of(com.blog.mywebsite.enumerator.Role.USER.getValue())
+                List.of(com.blog.mywebsite.enumerator.Role.ADMIN.getValue())
         );
 
         Role role = getRoleForUser();
@@ -54,7 +60,7 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(role);
 
         userRepository.save(user);
-        mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
+        //mailService.sendEmail("burakyapici747@gmail.com", new String[]{userCreateRequest.email()}, "User Register Email", jwtToken);
         return jwtToken;
     }
 

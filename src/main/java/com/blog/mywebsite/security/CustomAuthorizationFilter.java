@@ -94,6 +94,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter{
                             String.valueOf(HttpStatus.BAD_REQUEST.value()),
                             "Method Argument Not Valid Error",
                             "Error Detail",
+                            "Detail",
                             new com.blog.mywebsite.api.response.ErrorResponse.Error.Source(
                                     "Pointer",
                                     "Bos Parameter"

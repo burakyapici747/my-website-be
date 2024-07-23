@@ -1,9 +1,9 @@
 package com.blog.mywebsite.api;
 
+import com.blog.mywebsite.api.input.category.CategoryGetInput;
+import com.blog.mywebsite.api.input.category.CategoryPostInput;
+import com.blog.mywebsite.api.input.category.CategoryPutInput;
 import com.blog.mywebsite.api.output.CategoryOutput;
-import com.blog.mywebsite.api.request.CategoryGetRequest;
-import com.blog.mywebsite.api.request.CategoryPostRequest;
-import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.api.response.BaseResponse;
 import com.blog.mywebsite.mapper.CategoryMapper;
 import com.blog.mywebsite.service.CategoryService;
@@ -25,16 +25,14 @@ public class CategoryController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<BaseResponse<List<CategoryOutput>>> getCategories(
-            @ModelAttribute @Valid CategoryGetRequest categoryGetRequest
-    ){
+    public ResponseEntity<BaseResponse<List<CategoryOutput>>> getCategories(@Valid CategoryGetInput categoryGetInput){
         BaseResponse<List<CategoryOutput>> response = new BaseResponse<>(
                 null,
                 CategoryMapper.INSTANCE.categoryDTOListToCategoryOutputList(
                         categoryService.getCategories(
-                                categoryGetRequest.id(),
-                                categoryGetRequest.parentId(),
-                                categoryGetRequest.name()
+                                categoryGetInput.id(),
+                                categoryGetInput.parentId(),
+                                categoryGetInput.name()
                         )
                 )
         );
@@ -42,14 +40,10 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<BaseResponse<CategoryOutput>> create(
-            @RequestBody
-            @Valid
-            CategoryPostRequest categoryPostRequest
-    ){
+    public ResponseEntity<BaseResponse<CategoryOutput>> create(@RequestBody @Valid CategoryPostInput categoryPostInput){
         BaseResponse<CategoryOutput> response = new BaseResponse<>(
                 null,
-                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.create(categoryPostRequest))
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.create(categoryPostInput))
         );
         return ResponseEntity.ok(response);
     }
@@ -59,11 +53,11 @@ public class CategoryController {
             @RequestParam("id")
             @Size(min = 36, max = 36, message = "Id field must be empty or 36 characters long.")
             String id,
-            @RequestBody @Valid CategoryPutRequest categoryPutRequest
+            @RequestBody @Valid CategoryPutInput categoryPutInput
     ) {
         BaseResponse<CategoryOutput> response = new BaseResponse<>(
                 null,
-                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.updateById(id, categoryPutRequest))
+                CategoryMapper.INSTANCE.categoryDTOToCategoryOutput(categoryService.updateById(id, categoryPutInput))
         );
         return ResponseEntity.ok(response);
     }

@@ -1,7 +1,7 @@
 package com.blog.mywebsite.mapper;
 
+import com.blog.mywebsite.api.input.category.CategoryPutInput;
 import com.blog.mywebsite.api.output.CategoryOutput;
-import com.blog.mywebsite.api.request.CategoryPutRequest;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.model.Category;
 import org.mapstruct.*;
@@ -26,5 +26,5 @@ public interface CategoryMapper {
     CategoryOutput.Attributes toAttributes(CategoryDTO categoryDTO);
     Map<Integer, List<CategoryOutput>> toCategoryOutputMap(Map<Integer, List<CategoryDTO>> categoryDTOMap);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void categoryPutRequestToCategoryDTO(CategoryPutRequest categoryPutRequest, @MappingTarget Category category);
+    void categoryPutRequestToCategoryDTO(CategoryPutInput categoryPutInput, @MappingTarget Category category);
 }

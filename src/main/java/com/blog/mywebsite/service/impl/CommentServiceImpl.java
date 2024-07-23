@@ -1,15 +1,17 @@
 package com.blog.mywebsite.service.impl;
 
-import com.blog.mywebsite.api.request.CommentPostRequest;
-import com.blog.mywebsite.api.request.CommentPutRequest;
+import com.blog.mywebsite.api.input.comment.CommentPostInput;
+import com.blog.mywebsite.api.input.comment.CommentPutInput;
 import com.blog.mywebsite.common.util.ValueUtil;
 import com.blog.mywebsite.constant.EntityConstant;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.enumerator.SearchOperation;
 import com.blog.mywebsite.exception.EntityNotFoundException;
 import com.blog.mywebsite.mapper.CommentMapper;
+import com.blog.mywebsite.model.Article;
 import com.blog.mywebsite.model.Comment;
 import com.blog.mywebsite.repository.CommentRepository;
+import com.blog.mywebsite.service.ArticleService;
 import com.blog.mywebsite.service.CommentService;
 import com.blog.mywebsite.specification.CommonSpecification;
 import com.blog.mywebsite.specification.SearchCriteria;
@@ -23,9 +25,11 @@ import static com.blog.mywebsite.constant.CommentConstant.*;
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
+    private final ArticleService articleService;
 
-    public CommentServiceImpl(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, ArticleService articleService) {
         this.commentRepository = commentRepository;
+        this.articleService = articleService;
     }
 
     @Override
@@ -46,19 +50,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO updateById(String id, CommentPutRequest commentUpdateRequest) {
+    public CommentDTO updateById(String id, CommentPutInput commentPutInput) {
         Comment comment = findById(id);
-        comment.setContent(commentUpdateRequest.content());
+        comment.setContent(commentPutInput.content());
         return CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
     }
 
     @Override
-    public CommentDTO create(CommentPostRequest commentPostRequest) {
-        ValueUtil.checkDataIsNull(commentPostRequest, "CommentPostRequest is can not be null.");
+    public CommentDTO create(CommentPostInput commentPostInput) {
+        ValueUtil.checkDataIsNull(commentPostInput, "CommentPostInput is can not be null.");
 
+        Article article = articleService.findById(commentPostInput.articleId());
         Comment comment = new Comment();
-        comment.setContent(commentPostRequest.content());
-        checkParentCommentExistThenSetParentComment(commentPostRequest.parentId(), comment);
+        comment.setContent(commentPostInput.content());
+        article.getComments().add(comment);
+        checkParentCommentExistThenSetParentComment(commentPostInput.parentId(), comment);
         return CommentMapper.INSTANCE.commentToCommentDTO(commentRepository.save(comment));
     }
 

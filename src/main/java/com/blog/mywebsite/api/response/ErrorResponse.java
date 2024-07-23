@@ -10,6 +10,7 @@ public record ErrorResponse(
             String id,
             Links links,
             String status,
+            String code,
             String title,
             String detail,
             Source source,
