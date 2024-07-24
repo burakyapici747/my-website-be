@@ -4,7 +4,6 @@ import com.blog.mywebsite.api.input.category.CategoryPutInput;
 import com.blog.mywebsite.api.output.CategoryOutput;
 import com.blog.mywebsite.dto.CategoryDTO;
 import com.blog.mywebsite.model.Category;
-import com.blog.mywebsite.validation.CustomGenerated;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(componentModel = "spring")
-@CustomGenerated
 public interface CategoryMapper {
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
     @Mapping(source = "parent.id", target = "parentId")
