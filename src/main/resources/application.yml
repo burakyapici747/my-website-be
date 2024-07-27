@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mywebsite
+    username: test
+    password: test
+  jpa:
+    hibernate:
+    ddl-auto: update
+    show-sql: true
+
+security:
+  jwt:
+    secret: ${Y!V4aZ_U!^a|N1Q}
