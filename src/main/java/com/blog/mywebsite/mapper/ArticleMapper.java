@@ -4,7 +4,6 @@ import com.blog.mywebsite.api.input.article.ArticlePutInput;
 import com.blog.mywebsite.api.output.ArticleOutput;
 import com.blog.mywebsite.dto.ArticleDTO;
 import com.blog.mywebsite.model.Article;
-import com.blog.mywebsite.validation.CustomGenerated;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper(componentModel = "spring")
-@CustomGenerated
 public interface ArticleMapper {
     ArticleMapper INSTANCE = Mappers.getMapper(ArticleMapper.class);
     ArticleDTO articleToArticleDTO(Article article);

@@ -32,6 +32,7 @@ public class CommonSpecification<T> implements Specification<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked") // Unchecked cast warnings are suppressed here
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicateList = new ArrayList<>();
 
@@ -48,16 +49,16 @@ public class CommonSpecification<T> implements Specification<T> {
                         predicateList.add(criteriaBuilder.isNotNull(root.get(criteria.getKey())));
                         break;
                     case GREATER_THAN:
-                        predicateList.add(criteriaBuilder.greaterThan(root.get(criteria.getKey()), (Comparable)criteria.getValue()));
+                        predicateList.add(criteriaBuilder.greaterThan(root.get(criteria.getKey()), (Comparable<Object>) criteria.getValue()));
                         break;
                     case LESS_THAN:
-                        predicateList.add(criteriaBuilder.lessThan(root.get(criteria.getKey()), (Comparable)criteria.getValue()));
+                        predicateList.add(criteriaBuilder.lessThan(root.get(criteria.getKey()), (Comparable<Object>) criteria.getValue()));
                         break;
                     case GREATER_THAN_EQUAL:
-                        predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get(criteria.getKey()), (Comparable)criteria.getValue()));
+                        predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get(criteria.getKey()), (Comparable<Object>) criteria.getValue()));
                         break;
                     case LESS_THAN_EQUAL:
-                        predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get(criteria.getKey()), (Comparable)criteria.getValue()));
+                        predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get(criteria.getKey()), (Comparable<Object>) criteria.getValue()));
                         break;
                     case LIKE:
                         predicateList.add(criteriaBuilder.like(root.get(criteria.getKey()), "%" + criteria.getValue() + "%"));

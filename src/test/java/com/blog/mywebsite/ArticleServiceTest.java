@@ -40,6 +40,9 @@ public class ArticleServiceTest {
     private ArticleRepository articleRepository;
 
     @Mock
+    CommonSpecification<Article> articleCommonSpecification;
+
+    @Mock
     private CategoryServiceImpl categoryService;
 
     @InjectMocks
@@ -95,7 +98,7 @@ public class ArticleServiceTest {
             Assertions.assertNotNull(actualResult);
             Assertions.assertEquals(expectedResult, actualResult);
 
-            verify(articleRepository, times(1)).findAll(any(CommonSpecification.class));
+            verify(articleRepository, times(1)).findAll(any(Specification.class));
         }
 
         @Test
@@ -116,7 +119,6 @@ public class ArticleServiceTest {
 
         @Test
         void givenNotExistCategoryName_whenGetGroupedYearByCategoryName_thenReturnEmptyArticlesByYearMap(){
-            List<Article> articleList = Collections.emptyList();
             Map<Integer, List<ArticleDTO>> expectedResult = ArticleTestUtil.createEmptyArticleDTOListByYearMap();
 
             when(articleRepository.findByCategoryName(any())).thenReturn(Collections.emptyList());

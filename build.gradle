@@ -25,10 +25,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.1.4'
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

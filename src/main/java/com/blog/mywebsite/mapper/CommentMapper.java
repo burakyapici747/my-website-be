@@ -3,14 +3,12 @@ package com.blog.mywebsite.mapper;
 import com.blog.mywebsite.api.output.CommentOutput;
 import com.blog.mywebsite.dto.CommentDTO;
 import com.blog.mywebsite.model.Comment;
-import com.blog.mywebsite.validation.CustomGenerated;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-@CustomGenerated
 public interface CommentMapper {
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
     @Mapping(source = "parent.id", target = "parentId")
